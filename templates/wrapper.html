@@ -61,16 +61,26 @@
         $.ajaxSetup ({
             cache: false
         });
-        var ajax_load = "<img src='http://i.imgur.com/pKopwXp.gif' alt='loading...' />";
+        var ajax_load = ""; //"<div class='container text-center mx-auto'><img src='http://i.imgur.com/pKopwXp.gif' alt='loading...' /></div>";
         
-        // load() functions
-        var loadUrl = "add";
-        $("#add_question").click(function(){
-            $("#content").html(ajax_load).load(loadUrl);
-        });
+        $("#add_question").click(gen_changer('/add'));
+        $("#register").click(gen_changer('/register'));
+        $("#login").click(gen_changer('/login'));
+        $("#settings").click(gen_changer('/settings'));
 
     // end  
     });
+
+    function gen_changer(url) {
+            return function(){
+            $("#content").fadeOut('fast', function() {
+                  $("#content").load(url, function() {
+                    $('#content').fadeIn('fast');
+                  });
+              });
+            }
+        }
+        
     </script>
 
     <script src={% static "js/bootstrap.bundle.min.js"%}></script>
@@ -95,20 +105,20 @@
                 <!-- <a class="nav-link active" aria-current="page" href="#">Главная</a> -->
               </li>
             </ul>
-            <form class="d-flex">
-              <input class="form-control me-2 p-2" type="search" placeholder="Ваш запрос..." aria-label="Ваш запрос...">
+            <form action='/search' method='get' class="d-flex">
+              <input name='query' class="form-control me-2 p-2" type="search" placeholder="Ваш запрос..." aria-label="Ваш запрос...">
               <button class="btn btn-outline-success me-2" type="submit">Найти</button>
             </form>
             <div class="d-flex align-items-center me-lg-1 ms-auto">
               {% if avatar %}
-                <a href="/settings" class="me-2">
+                <a id="settings" href='#' class="me-2">
                   <img src="{{avatar}}" alt="{{usernick}}" style="width: 4vh; height: 4vh; min-height:100%;">
                 </a>
                 <button id="add_question" class="btn btn-outline-success align-middle me-2">+</button>
                 <a class="btn btn-outline-danger align-middle" href="/logout">Выйти</a>
               {% else %}
-                <a class="btn btn-outline-success align-middle me-2" href="/login">Войти</a>
-                <a class="btn btn-outline-danger align-middle" href="/register">Регистрация</a>
+                <button id="login" class="btn btn-outline-success align-middle me-2">Войти</button>
+                <button id="register" class="btn btn-outline-danger align-middle">Регистрация</button>
               {% endif %}
             </div>
           </div>
@@ -117,14 +127,15 @@
     </header>
 
     <!-- Begin page content -->
-    <main class="flex-shrink-0 mb-4 ms-4">
+    <main class="flex-shrink-0 mb-4 mt-4">
       <div class='container me-auto ms-auto'>
-        <div class="row mt-xxl-4 border border-dark">
+        <div class="row border border-dark">
           <div class="col-9 pt-4 pb-4 bg-white rounded-3 border-end border-dark">
               {% if messages %}
                 {% for message in messages %}
-                    <div class="alert {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}alert-danger {% else %}alert-success {% endif %}">
+                    <div class="alert alert-dismissible fade show {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}alert-danger {% else %}alert-success {% endif %}">
                         {{ message }}
+                      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
                     </div>
                 {% endfor %}
               {% endif %}
@@ -137,7 +148,7 @@
                 {% if tags_rank %}
                 {% with 'primary secondary success' as list%}
                   {% for tag in tags_rank %}
-                    <span class="badge rounded-pill bg-{{list.split|random}}">{{tag.name}}</span>
+                    <a href="/search/?query={{tag.name}}"><span class="badge rounded-pill bg-{{list.split|random}}">{{tag.name}}</span></a>
                   {% endfor %}
                 {% endwith %}
                 {% else %}

@@ -27,6 +27,20 @@ def index(request):
         qp = pg.page(pg.num_pages)
     return render(request, 'index.html', {'title': 'Новые вопросы', 'quests': qp})
 
+def search(request):
+    query = request.GET.get('query')
+    if not query:
+        return HttpResponseRedirect('/')
+    pg = Paginator(Question.objects.filter(tags__name__contains=query).order_by('-created').all(), 4)
+    page = request.GET.get('page', 1)
+    try:
+        qp = pg.page(page)
+    except PageNotAnInteger:
+        qp  = pg.page(1)
+    except EmptyPage:
+        qp = pg.page(pg.num_pages)
+    return render(request, 'index.html', {'title': 'Поиск', 'quests': qp})
+
 def hot_questions(request):
     pg = Paginator(Question.objects.annotate(num_likes=Count('like')).order_by('-num_likes'), 4)
     page = request.GET.get('page', 1)
@@ -54,7 +68,7 @@ def login(request):
 
             if not User.objects.filter(username=data['login']).exists():
                 messages.error(request, f'Пользователь {data["login"]} не существует.')
-                return HttpResponseRedirect('/login')
+                return HttpResponseRedirect('/')
 
             user = authenticate(username=data['login'], password=data['passw'])
             if user is not None:
@@ -64,10 +78,10 @@ def login(request):
                 return HttpResponseRedirect('/')
             else:
                 messages.error(request, f'Неверный пароль.')
-                return HttpResponseRedirect('/login')
+                return HttpResponseRedirect('/')
         else:
             messages.error(request,'Форма неверно заполнена.')
-            return HttpResponseRedirect('/login')
+            return HttpResponseRedirect('/')
     else:
         form = LoginForm()
         return render(request, 'login.html', {'form': form})
@@ -82,11 +96,11 @@ def register(request):
 
             if User.objects.filter(username=data['login']).exists():
                 messages.error(request, f'Пользователь {data["login"]} уже существует.')
-                return HttpResponseRedirect('/register')
+                return HttpResponseRedirect('/')
                 
             if data['passw'] != data['passw_conf']:
                 messages.error(request, 'Пароли не совпадают.')
-                return HttpResponseRedirect('/register')
+                return HttpResponseRedirect('/')
 
             newavatar = request.FILES['avatar']
             newavatar = cropper(newavatar, newavatar.name)
@@ -102,7 +116,7 @@ def register(request):
             return HttpResponseRedirect('/')
         else:
             messages.error(request,'Форма неверно заполнена.')
-            return HttpResponseRedirect('/register')
+            return HttpResponseRedirect('/')
     else:
         form = RegisterForm()
         return render(request, 'register.html', {'form': form})
@@ -138,10 +152,10 @@ def add_question(request):
                 return HttpResponseRedirect('/')
             else:
                 messages.error(request, 'Пользователь не существует.')
-                return HttpResponseRedirect('/add')
+                return HttpResponseRedirect('/')
         else:
             messages.error(request,'Форма неверно заполнена.')
-            return HttpResponseRedirect('/add')
+            return HttpResponseRedirect('/')
     else:
         form = AddQuestionForm()
         return render(request, 'add.html', {'form': form})
@@ -150,12 +164,13 @@ def like_question(request, id=None):
     if not request.user.is_authenticated or not id:
         return HttpResponseRedirect('/')
     q = Question.objects.get(id=id)
-    like = Like()
     user = User.objects.get(username=request.user)
     profile = UserProfile.objects.get(user=user)
-    like.user = profile
-    like.question = q
-    like.save()
+    like, created = Like.objects.get_or_create(user=profile, question=q)
+    if not created:
+        like.user = profile
+        like.question = q
+        like.save()
     return HttpResponseRedirect('/')
 
 def like_answer(request, q_id=None, a_id=None):
@@ -163,13 +178,13 @@ def like_answer(request, q_id=None, a_id=None):
         return HttpResponseRedirect('/')
     q = Question.objects.get(id=q_id)
     a = Answer.objects.get(id=a_id)
-    like = Like()
     user = User.objects.get(username=request.user)
     profile = UserProfile.objects.get(user=user)
-    like.user = profile
-    like.answer = a
-    like.save()
-    print(request.path_info)
+    like, created = Like.objects.get_or_create(user=profile, answer=a)
+    if not created:
+        like.user = profile
+        like.answer = a
+        like.save()
     return HttpResponseRedirect('/')
 
 def question(request, id=None):
@@ -197,13 +212,13 @@ def question(request, id=None):
                 a.question = q
                 a.save()
                 messages.info(request, "Ответ успешно добавлен.")
-                return HttpResponseRedirect(f'/q/{id}')
+                return HttpResponseRedirect('/')
             else:
                 messages.error(request, 'Вы не авторизованы.')
-                return HttpResponseRedirect('/register')
+                return HttpResponseRedirect('/')
         else:
             messages.error(request,'Форма неверно заполнена.')
-            return HttpResponseRedirect(f'/q/{id}')
+            return HttpResponseRedirect('/')
     else:
         form = AddAnswerForm()
     return render(request, 'question.html', {'quest': q, 'answers': pa, 'form': form})
@@ -227,10 +242,10 @@ def settings(request):
             userprofile.save()
             if username_changed:
                 user = authenticate(username=data['login'], password=user.password)
-            return HttpResponseRedirect('/settings')
+            return HttpResponseRedirect('/')
         else:
             messages.error(request,'Форма неверно заполнена.')
-            return HttpResponseRedirect('/settings')
+            return HttpResponseRedirect('/')
     else:
         form = SettingsForm()
         return render(request, 'settings.html', {'form': form})

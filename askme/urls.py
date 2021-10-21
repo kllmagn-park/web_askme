@@ -30,6 +30,7 @@ urlpatterns = [
     path('q/<uuid:id>/like', views.like_question),
     path('q/<uuid:q_id>/a/<uuid:a_id>/like', views.like_answer),
     path('q/<uuid:id>/', views.question),
+    path('search/', views.search),
     path('settings/', views.settings)
 ]
 

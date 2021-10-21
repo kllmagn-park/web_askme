@@ -1,0 +1,21 @@
+
+{% if like_button %}
+<a href="/q/{{obj.id}}/like" class="d-flex btn btn-danger btn-sm me-auto">
+  <span class="ms-auto">❤️</span>
+  <span class="badge bg-light text-dark ms-auto my-auto">{{obj.like_set.count}}</span>
+</a>
+{% endif %}
+
+{% if answers_button %}
+<button id="show_answers" onclick="gen_changer('/q/{{obj.id}}/')();" class="d-flex btn btn-primary btn-sm me-auto">
+  <span class="ms-auto">Ответы</span>
+  <span class="badge bg-light text-dark ms-auto my-auto">{{obj.answer_set.count}}</span>
+</button>
+{% endif %}
+
+{% if like_button_tt %}
+<a href="/q/{{obj.id}}/like" class="d-flex btn btn-danger btn-sm me-auto" data-toggle="tooltip" data-placement="right" title="{{obj.like_set.count}}">
+  <span class="ms-auto me-auto">❤️</span>
+  <!-- <span class="badge bg-light text-dark ms-auto my-auto">{{quest.like_set.count}}</span> -->
+</a>
+{% endif %}

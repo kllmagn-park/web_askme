@@ -1,12 +1,6 @@
-{% extends 'wrapper.html' %}
-{% block head %}
-<title>{{SITE_TITLE}} - Добавить вопрос</title>
-{% endblock %}
-
-{% block content %}
 <div class="col border border-5 border-dark rounded-3 p-4">
     <h2 class="text-responsive text-center">Добавить вопрос</h2>
-    <form method="post">
+    <form action='/add/' method="post">
       {% csrf_token %}
 
       <div class="form-outline mb-4">
@@ -26,4 +20,3 @@
         </div>
     </form>
 </div>
-{% endblock %}

@@ -14,18 +14,12 @@
   <div class="col rounded-3 bg-dark text-light text-responsive text-center mt-2">Нет вопросов :(</div>
   {% else %}
   {% for quest in quests %}
-  <div class="row bg-dark text-light border border-dark mx-1 my-1 py-2 rounded-3">
+  <div class="row shadow bg-dark text-light border border-dark mx-1 my-1 py-2 rounded-3">
     <div class="col-2">
       <img src="{{quest.user.avatar.url}}" class="border border-white border-3" alt="Владимир Набоков" width="100%" height="auto">
       <div class="row my-2 mx-1 gap-2">
-        <a href="q/{{quest.id}}/like" class="d-flex btn btn-danger btn-sm me-auto">
-          <span class="ms-auto">❤️</span>
-          <span class="badge bg-light text-dark ms-auto my-auto">{{quest.like_set.count}}</span>
-        </a>
-        <a href='q/{{quest.id}}/' class="d-flex btn btn-primary btn-sm me-auto">
-          <span class="ms-auto">Ответы</span>
-          <span class="badge bg-light text-dark ms-auto my-auto">{{quest.answer_set.count}}</span>
-        </a>
+        {% include "buttons.html" with obj=quest like_button=True%}
+        {% include "buttons.html" with obj=quest answers_button=True%}
       </div>
     </div>
     <div class="col-10 border-start border-white ps-2">
@@ -35,7 +29,7 @@
         <span class="me-2">Теги:</span>
         {% with 'primary secondary success' as list%}
           {% for tag in quest.tags.all %}
-            <span class="badge rounded-pill bg-{{list.split|random}} ms-2">{{tag.name}}</span>
+            <a href="/search/?query={{tag.name}}"><span class="badge rounded-pill bg-{{list.split|random}} ms-2">{{tag.name}}</span></a>
           {% endfor %}
         {% endwith %}
       </div>

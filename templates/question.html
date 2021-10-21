@@ -1,10 +1,5 @@
-{% extends 'wrapper.html' %}
-{% block head%}
-<title>{{SITE_TITLE}} - {{quest.title}}</title>
-{%endblock%}
-{% block content %}
 <div class="col">
-  <div class="row bg-dark text-light border border-dark mx-1 my-1 px-2 py-2 rounded-3">
+  <div class="row shadow bg-dark text-light border border-dark mx-1 my-1 px-2 py-2 rounded-3">
     <div class="col-2">
       <img src="{{quest.user.avatar.url}}" class="border border-white border-3" alt="Владимир Набоков" width="100%" height="auto">
       <div class="row my-2 mx-1 gap-2">
@@ -22,7 +17,7 @@
             <span class="me-2">Теги:</span>
             {% with 'primary secondary success' as list%}
               {% for tag in quest.tags.all %}
-                <span class="badge rounded-pill bg-{{list.split|random}} ms-2">{{tag.name}}</span>
+                <a href="/search/?query={{tag.name}}"><span class="badge rounded-pill bg-{{list.split|random}} ms-2">{{tag.name}}</span></a>
               {% endfor %}
             {% endwith %}
           </div>
@@ -34,7 +29,7 @@
   </div>
 
   <div id="add_q_form" class="col border border-5 border-dark rounded-3 p-4 mb-4 mt-2 collapse">
-      <form method="post">
+      <form action='/q/{{quest.id}}/' method="post">
         {% csrf_token %}
         <div class="form-outline mb-4">
           {{form.text}}
@@ -54,7 +49,7 @@
     <div class="col-sm-auto" style="width: 10%">
       <img src="{{answer.user.avatar.url}}" class="border border-white border-3" alt="Владимир Набоков" width="100%" height="auto">
       <div class="row my-2 mx-1 gap-2">
-        <a href="a/{{answer.id}}/like" class="d-flex btn btn-danger btn-sm me-auto" data-toggle="tooltip" data-placement="right" title="{{answer.like_set.count}}">
+        <a href="/q/{{quest.id}}/a/{{answer.id}}/like" class="d-flex btn btn-danger btn-sm me-auto" data-toggle="tooltip" data-placement="right" title="{{answer.like_set.count}}">
           <span class="ms-auto me-auto">❤️</span>
           <!-- <span class="badge bg-light text-dark ms-auto my-auto">{{answer.like_set.count}}</span> -->
         </a>
@@ -90,5 +85,3 @@
     {% endif %}
   </ul>
 {% endif %}
-
-{% endblock %}
