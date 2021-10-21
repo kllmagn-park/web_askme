@@ -1,0 +1,4 @@
+.text-responsive {
+    font-size: calc(80% + 0.5vw + 0.5vh);
+    white-space: nowrap;
+}

@@ -1,0 +1,94 @@
+{% extends 'wrapper.html' %}
+{% block head%}
+<title>{{SITE_TITLE}} - {{quest.title}}</title>
+{%endblock%}
+{% block content %}
+<div class="col">
+  <div class="row bg-dark text-light border border-dark mx-1 my-1 px-2 py-2 rounded-3">
+    <div class="col-2">
+      <img src="{{quest.user.avatar.url}}" class="border border-white border-3" alt="Владимир Набоков" width="100%" height="auto">
+      <div class="row my-2 mx-1 gap-2">
+        <a href="/q/{{quest.id}}/like" class="d-flex btn btn-danger btn-sm me-auto" data-toggle="tooltip" data-placement="right" title="{{quest.like_set.count}}">
+          <span class="ms-auto me-auto">❤️</span>
+          <!-- <span class="badge bg-light text-dark ms-auto my-auto">{{quest.like_set.count}}</span> -->
+        </a>
+      </div>
+    </div>
+      <div class="col-10 border-start border-white">
+        <div class="col ms-2">
+          <div class="row"><h5 class="mt-0">{{quest.title}}</h5></div>
+          <div class="row"><p>{{quest.description}}</p></div>
+          <div class="col d-flex flex-wrap align-items-center" style="row-gap: 5px;">
+            <span class="me-2">Теги:</span>
+            {% with 'primary secondary success' as list%}
+              {% for tag in quest.tags.all %}
+                <span class="badge rounded-pill bg-{{list.split|random}} ms-2">{{tag.name}}</span>
+              {% endfor %}
+            {% endwith %}
+          </div>
+        </div>
+      </div>
+      <a class="btn btn-success mt-2" data-bs-toggle="collapse" href="#add_q_form" role="button" aria-expanded="false" aria-controls="add_q_form">
+        Добавить ответ
+      </a>
+  </div>
+
+  <div id="add_q_form" class="col border border-5 border-dark rounded-3 p-4 mb-4 mt-2 collapse">
+      <form method="post">
+        {% csrf_token %}
+        <div class="form-outline mb-4">
+          {{form.text}}
+        </div>
+          <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-success">Ответить</button>
+          </div>
+      </form>
+  </div>
+</div>
+
+<!-- if not answers  -->
+<!-- <h4 class="text-responsive text-center mt-2">Нет ответов :(</h4> -->
+{% if answers %}
+{% for answer in answers %}
+  <div class="row bg-dark text-light border border-dark mx-1 my-1 px-2 py-2 rounded-3">
+    <div class="col-sm-auto" style="width: 10%">
+      <img src="{{answer.user.avatar.url}}" class="border border-white border-3" alt="Владимир Набоков" width="100%" height="auto">
+      <div class="row my-2 mx-1 gap-2">
+        <a href="a/{{answer.id}}/like" class="d-flex btn btn-danger btn-sm me-auto" data-toggle="tooltip" data-placement="right" title="{{answer.like_set.count}}">
+          <span class="ms-auto me-auto">❤️</span>
+          <!-- <span class="badge bg-light text-dark ms-auto my-auto">{{answer.like_set.count}}</span> -->
+        </a>
+      </div>
+    </div>
+    <div class="col-sm-auto border-start border-white" style="width: 90%">
+      <div class="col ms-2">
+        <div class="row"><p>{{answer.text}}</p></div>
+      </div>
+    </div>
+</div>
+{% endfor %}
+{% endif %}
+
+{% if answers.has_other_pages %}
+  <ul class="pagination pt-2">
+    {% if answers.has_previous %}
+      <li class="page-item"><a class="page-link" href="?page={{ answers.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="page-item disabled"><a class="page-link">&laquo;</a></li>
+    {% endif %}
+    {% for i in answers.paginator.page_range %}
+      {% if answers.number == i %}
+        <li class="page-item active"><a class="page-link">{{ i }}</a></li>
+      {% else %}
+        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if answers.has_next %}
+      <li class="page-item"><a class="page-link" href="?page={{ answers.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="page-item disabled"><a class="page-link">&raquo;</a></li>
+    {% endif %}
+  </ul>
+{% endif %}
+
+{% endblock %}
