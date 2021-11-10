@@ -1,0 +1,26 @@
+<div class="row shadow bg-dark text-light border border-white mx-1 my-1 py-3 rounded-3">
+    <div class="col-2">
+        <div class="d-flex flex-column h-100">
+            <img src="{{MEDIA_URL}}{{quest.user.avatar}}" class="border border-white border-3 mt-auto" alt="Владимир Набоков" width="100%" height="auto" data-toggle="tooltip" data-placement="right" title="{{quest.user.nick}}">
+            <div class="row my-2 mx-1 gap-2 mb-auto">
+                {% include "buttons.html" with obj=quest like_button_tt=True%}
+                {% if show_answers %}{% include "buttons.html" with obj=quest answers_button=True%}{% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-10 border-start border-white ps-3">
+        <div class="d-flex flex-column h-100">
+            <div class="col inner-shadow bg-secondary rounded-3 mb-2 py-2 px-3">
+                <div class="row text-center"><h5 style="text-shadow: black 0.1em 0.1em 0.2em;">{{quest.title}}</h5></div>
+                <div class="row flex-grow-1"><p class="m-0">{%if "/question/" not in request.path%}{{quest.description|truncatechars:200}}{%if title|length > 200%}...{%endif%}{%else%}{{quest.description}}{%endif%}</p></div>
+            </div>
+            <div class='row'>
+                <div class="d-inline-flex flex-wrap align-items-center mt-auto" style="row-gap: 5px;">
+                    <span class="me-2">Теги:</span>
+                    {% include "block_tags.html" with tags=quest.tag_set.all %}
+                </div>
+                <div class="mt-1">Опубликовано: <b>{{ quest.created|date:"Y/m/d H:i:s" }}</b></div>
+            </div>
+        </div>
+    </div>
+</div>

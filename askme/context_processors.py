@@ -1,13 +1,13 @@
 from django.contrib.auth.models import User
-from django.db.models import Count
+from django.db.models import Count, F, Sum
 
-from .settings import SITE_TITLE # import the settings file
+from .settings import SITE_TITLE, MEDIA_URL
 from .models import UserProfile, Tag
 
+from django.utils import timezone
 
-def site_title(request):
-    # return the value you want as a dictionnary. you may add multiple values in there.
-    return {'SITE_TITLE': SITE_TITLE}
+def set_settings(request):
+    return {'SITE_TITLE': SITE_TITLE, 'MEDIA_URL': MEDIA_URL}
 
 def user_info(request):
     user = request.user
@@ -24,15 +24,16 @@ def user_info(request):
         return {}
 
 def best_users(request):
-    busers = UserProfile.objects.annotate(num_likes=Count('like')).order_by('-num_likes')
+    busers = UserProfile.objects.best()
     if busers.count() > 10:
         busers = busers[:10]
     return {'best_users': busers}
 
-    
 def tags_rank(request):
     tags = Tag.objects.all()
-    rank = tags.annotate(number_of_questions=Count('question')).order_by('-number_of_questions')
-    if rank.count() > 20:
-        rank = rank[:30]
+    end = timezone.now()
+    start = end - timezone.timedelta(days=90) # последние 3 месяца
+    rank = Tag.objects.best(start, end)
+    if rank.count() > 10:
+        rank = rank[:10]
     return {'tags_rank': rank}

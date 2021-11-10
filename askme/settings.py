@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-7-q34ocu^-ga2)0*!9m@2#9wu-^w_1q%fn9+svlal$$*6eq^g_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['e526-195-19-34-134.ngrok.io']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_cleanup.apps.CleanupConfig',
     'askme'
 ]
 
@@ -64,7 +65,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'askme.context_processors.site_title',
+                'askme.context_processors.set_settings',
                 'askme.context_processors.user_info',
                 'askme.context_processors.best_users',
                 'askme.context_processors.tags_rank'
@@ -81,8 +82,12 @@ WSGI_APPLICATION = 'askme.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
@@ -111,7 +116,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 

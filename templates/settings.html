@@ -1,22 +1,33 @@
+{% extends 'base.html' %}
+{% block head%}
+<title>{{SITE_TITLE}} - Вопросы</title>
+{%endblock%}
+{% block content %}
 <div class="col border border-5 border-dark rounded-3 p-4">
-    <h2 class="text-responsive text-center">Настройки аккаунта</h2>
-    <form action='/settings/' method="post" enctype="multipart/form-data">
+    <h2 class="text-center">Настройки аккаунта</h2>
+    <form action="{% url 'settings' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="form-outline mb-4">
-            {{form.login}}
-        </div>
-        <div class="form-outline mb-4">
-            {{form.email}}
-        </div>
-        <div class="form-outline mb-4">
-            {{form.nick}}
-        </div>
         <div class="mb-3">
-            <label for="formFile" class="form-label">Выберите фото профиля:</label>
-            {{form.avatar}}
+            <div class="d-flex align-items-center gap-4">
+                <img src={{avatar}} class="border border-dark border-2">
+                {{form.avatar}}
+            </div>
+        </div>
+        <div class="form-floating mb-4">
+            {{form.login}}
+            {{form.login.label_tag}}
+        </div>
+        <div class="form-floating mb-4">
+            {{form.email}}
+            {{form.email.label_tag}}
+        </div>
+        <div class="form-floating mb-4">
+            {{form.nick}}
+            {{form.nick.label_tag}}
         </div>
         <div class="d-grid gap-2">
             <button type="submit" class="btn btn-primary btn-danger">Обновить</button>
         </div>
     </form>
 </div>
+{% endblock %}

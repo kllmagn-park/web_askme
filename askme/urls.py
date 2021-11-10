@@ -13,25 +13,33 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls.static import static
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.views.generic import TemplateView
 from . import views
 from . import settings
 
+handler404 = 'askme.views.handler404'
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', views.index),
-    path('hot', views.hot_questions),
-    path('register/', views.register),
-    path('login/', views.login),
-    path('logout/', views.logout),
-    path('add/', views.add_question),
-    path('q/<uuid:id>/like', views.like_question),
-    path('q/<uuid:q_id>/a/<uuid:a_id>/like', views.like_answer),
-    path('q/<uuid:id>/', views.question),
-    path('search/', views.search),
-    path('settings/', views.settings)
+    path('admin/', admin.site.urls, name='admin'),                            # панель управления
+    path('', views.index, name='index'),                                      # главная страница
+    path('hot/', views.hot_questions, name='hot'),                            # популярные вопросы
+    path('signup/', views.signup, name='signup'),                             # регистрация
+    path('login/', views.login, name='login'),                                # вход
+    path('login?continue=<str:redirect_url>', views.login, name='login_red'), # вход - перенаправление
+    path('logout/', views.logout, name='logout'),                             # выход
+    path('ask/', views.ask, name='ask'),                             # задать вопрос
+    path('like', views.like, name='like'),                                    # поставить лайк
+    path('set_correct', views.set_correct, name='set_correct'),               # пометить ответ как верный
+    path('question/<int:id>/', views.question, name='question'),              # страница вопроса
+    path('search/', views.search, name='search'),                             # поиск
+    path('tag/<str:tag>', views.show_tag, name='tag'),                        # страница вопросов с тегом
+    path('settings/', views.settings, name='settings')                        # настройки пользователя
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += staticfiles_urlpatterns()

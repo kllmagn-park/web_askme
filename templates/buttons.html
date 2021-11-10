@@ -1,21 +1,21 @@
 
 {% if like_button %}
-<a href="/q/{{obj.id}}/like" class="d-flex btn btn-danger btn-sm me-auto">
+<button id='{{obj.id}}' onclick='like.call(this)' like_url='{%if obj.question %}a{%else%}/q{%endif%}/{{obj.id}}/like' class="d-flex btn btn-danger btn-sm me-auto" {%if not username %} disabled {% endif %}>
   <span class="ms-auto">❤️</span>
   <span class="badge bg-light text-dark ms-auto my-auto">{{obj.like_set.count}}</span>
-</a>
+</button>
 {% endif %}
 
 {% if answers_button %}
-<button id="show_answers" onclick="gen_changer('/q/{{obj.id}}/')();" class="d-flex btn btn-primary btn-sm me-auto">
-  <span class="ms-auto">Ответы</span>
-  <span class="badge bg-light text-dark ms-auto my-auto">{{obj.answer_set.count}}</span>
+<button id="show_answers" onclick="gen_changer('/question/{{obj.id}}/')();" class="d-flex btn btn-primary btn-sm me-auto px-0" data-toggle="tooltip" data-placement="right" title="{{obj.answer_set.count}}">
+  <span class="ms-auto me-auto d-none d-lg-block">Ответы</span>
+  <span class="ms-auto me-auto d-lg-none">🗨️</span>
 </button>
 {% endif %}
 
 {% if like_button_tt %}
-<a href="/q/{{obj.id}}/like" class="d-flex btn btn-danger btn-sm me-auto" data-toggle="tooltip" data-placement="right" title="{{obj.like_set.count}}">
-  <span class="ms-auto me-auto">❤️</span>
-  <!-- <span class="badge bg-light text-dark ms-auto my-auto">{{quest.like_set.count}}</span> -->
-</a>
+<button onclick='like.call(this)' {%if obj.question %}a_id{%else%}q_id{%endif%}="{{obj.id}}" class="d-flex btn btn-danger btn-sm me-auto px-0" {%if not username %} disabled {% endif %} data-toggle="tooltip" data-placement="right" title="{{obj.likes.count}}">
+  <span class="ms-auto me-auto d-none d-lg-block">Нравится</span>
+  <span class="ms-auto me-auto d-lg-none">❤️</span>
+</button>
 {% endif %}

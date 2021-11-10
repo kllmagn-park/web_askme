@@ -1,9 +1,10 @@
 from django import forms
+from .validators import validate_file_extension
 
 
 class LoginForm(forms.Form):
     login = forms.CharField(label='Логин', max_length=20, widget=forms.TextInput(attrs={'placeholder': 'Логин'}))
-    passw = forms.CharField(label='Пароль', max_length=100, widget=forms.TextInput(attrs={'placeholder': 'Пароль'}))
+    passw = forms.CharField(label='Пароль', max_length=100, widget=forms.PasswordInput(attrs={'placeholder': 'Пароль'}))
 
     def __init__(self, *args, **kwargs):
         super(LoginForm, self).__init__(*args, **kwargs)
@@ -15,8 +16,8 @@ class RegisterForm(forms.Form):
     login = forms.CharField(label='Логин', max_length=20, widget=forms.TextInput(attrs={'placeholder': 'Логин'}))
     email = forms.CharField(label='Почтовый ящик', max_length=50, widget=forms.TextInput(attrs={'placeholder': 'Почтовый ящик'}))
     nick = forms.CharField(label='Ваше имя', max_length=50, widget=forms.TextInput(attrs={'placeholder': 'Ваше имя'}))
-    passw = forms.CharField(label='Пароль', max_length=100, widget=forms.TextInput(attrs={'placeholder': 'Пароль'}))
-    passw_conf = forms.CharField(label='Подтверждение пароля', max_length=100, widget=forms.TextInput(attrs={'placeholder': 'Подтверждение пароля'}))
+    passw = forms.CharField(label='Пароль', max_length=100, widget=forms.PasswordInput(attrs={'placeholder': 'Пароль'}))
+    passw_conf = forms.CharField(label='Подтверждение пароля', max_length=100, widget=forms.PasswordInput(attrs={'placeholder': 'Подтверждение пароля'}))
     avatar = forms.FileField(
         label='Выберите файл',
         help_text=''
@@ -48,12 +49,14 @@ class AddAnswerForm(forms.Form):
             visible.field.widget.attrs['class'] = 'form-control'
 
 class SettingsForm(forms.Form):
-    login = forms.CharField(label='Логин', max_length=20, widget=forms.TextInput(attrs={'placeholder': 'Логин'}))
-    email = forms.CharField(label='Почтовый ящик', max_length=50, widget=forms.TextInput(attrs={'placeholder': 'Почтовый ящик'}))
-    nick = forms.CharField(label='Ваше имя', max_length=50, widget=forms.TextInput(attrs={'placeholder': 'Ваше имя'}))
+    login = forms.CharField(label='Логин', max_length=20, widget=forms.TextInput(attrs={'placeholder': 'Логин'}), required=False)
+    email = forms.CharField(label='Почтовый ящик', max_length=50, widget=forms.TextInput(attrs={'placeholder': 'Почтовый ящик'}), required=False)
+    nick = forms.CharField(label='Ваше имя', max_length=50, widget=forms.TextInput(attrs={'placeholder': 'Ваше имя'}), required=False)
     avatar = forms.FileField(
-        label='Выберите файл',
-        help_text=''
+        label='Выберите фото профиля',
+        help_text='',
+        required=False,
+        validators=[validate_file_extension]
     )
 
     def __init__(self, *args, **kwargs):

@@ -1,0 +1,7 @@
+{% with 'primary secondary success' as list%}
+    <div class="d--flex gap-2">
+        {% for tag in tags %}
+            <a href="/tag/{{tag.name}}"><span class="badge rounded-pill bg-{{list.split|random}}">{{tag.name}}</span></a>
+        {% endfor %}
+    </div>
+{% endwith %}

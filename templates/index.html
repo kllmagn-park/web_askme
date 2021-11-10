@@ -1,63 +1,24 @@
-{% extends 'wrapper.html' %}
+{% extends 'base.html' %}
 {% block head%}
 <title>{{SITE_TITLE}} - Вопросы</title>
 {%endblock%}
 {% block content %}
 <div class="col rounded-3">
   <div class="d-flex ms-2 me-2 mt-2">
-    <h2 class="text-responsive align-item-center text-center ms-auto me-auto">{{title}}</h2>
+    <h2 class="align-item-center text-center ms-auto me-auto">{{title}}</h2>
     {% if not 'hot' in request.path %}
-    <a href="hot" class="text-responsive text-decoration-none">🔥</a>
+    <a href="{% url 'hot' %}" class="text-decoration-none">🔥</a>
     {% endif %}
   </div>
   {% if not quests %}
-  <div class="col rounded-3 bg-dark text-light text-responsive text-center mt-2">Нет вопросов :(</div>
+    <div class="d-flex justify-content-center h-75 align-items-stretch align-text-bottom rounded-3 bg-dark text-light text-center mt-2"><h3 class="align-self-center">Нет вопросов :(</h3></div>
   {% else %}
   {% for quest in quests %}
-  <div class="row shadow bg-dark text-light border border-dark mx-1 my-1 py-2 rounded-3">
-    <div class="col-2">
-      <img src="{{quest.user.avatar.url}}" class="border border-white border-3" alt="Владимир Набоков" width="100%" height="auto">
-      <div class="row my-2 mx-1 gap-2">
-        {% include "buttons.html" with obj=quest like_button=True%}
-        {% include "buttons.html" with obj=quest answers_button=True%}
-      </div>
-    </div>
-    <div class="col-10 border-start border-white ps-2">
-      <div class="row"><h5 class="mt-0">{{quest.title}}</h5></div>
-      <div class="row mb-auto"><p>{{quest.description}}</p></div>
-      <div class="d-flex flex-wrap align-items-center mt-auto" style="row-gap: 5px;">
-        <span class="me-2">Теги:</span>
-        {% with 'primary secondary success' as list%}
-          {% for tag in quest.tags.all %}
-            <a href="/search/?query={{tag.name}}"><span class="badge rounded-pill bg-{{list.split|random}} ms-2">{{tag.name}}</span></a>
-          {% endfor %}
-        {% endwith %}
-      </div>
-    </div>
-  </div>
+    {%include "block_question.html" with show_answers=True%}
   {% endfor %}
   {% endif %}
 </div>
 
-{% if quests.has_other_pages %}
-  <ul class="pagination mb-0 mt-2">
-    {% if quests.has_previous %}
-      <li class="page-item"><a class="page-link" href="?page={{ quests.previous_page_number }}">&laquo;</a></li>
-    {% else %}
-      <li class="page-item disabled"><a class="page-link">&laquo;</a></li>
-    {% endif %}
-    {% for i in quests.paginator.page_range %}
-      {% if quests.number == i %}
-        <li class="page-item active"><a class="page-link">{{ i }}</a></li>
-      {% else %}
-        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-      {% endif %}
-    {% endfor %}
-    {% if quests.has_next %}
-      <li class="page-item"><a class="page-link" href="?page={{ quests.next_page_number }}">&raquo;</a></li>
-    {% else %}
-      <li class="page-item disabled"><a class="page-link">&raquo;</a></li>
-    {% endif %}
-  </ul>
-{% endif %}
+{%include "paginator.html" with objs=quests%}
+
 {% endblock %}

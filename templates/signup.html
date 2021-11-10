@@ -1,20 +1,25 @@
+{% extends 'base.html' %}
+{% block head%}
+<title>{{SITE_TITLE}} - Вопросы</title>
+{%endblock%}
+{% block content %}
 <div class="col border border-5 border-dark rounded-3 p-4">
-    <h2 class="text-responsive text-center">Регистрация</h2>
-    <form action='/register/' method="post" enctype="multipart/form-data">
+    <h2 class="text-center mb-4">Регистрация</h2>
+    <form action="{% url 'signup' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="form-outline mb-4">
+        <div class="form-outline mb-2">
             {{form.login}}
         </div>
-        <div class="form-outline mb-4">
+        <div class="form-outline mb-2">
             {{form.email}}
         </div>
-        <div class="form-outline mb-4">
+        <div class="form-outline mb-2">
             {{form.nick}}
         </div>
-        <div class="form-outline mb-4">
+        <div class="form-outline mb-2">
             {{form.passw}}
         </div>
-        <div class="form-outline mb-4">
+        <div class="form-outline mb-2">
             {{form.passw_conf}}
         </div>
         <div class="mb-3">
@@ -26,3 +31,4 @@
         </div>
     </form>
 </div>
+{% endblock %}
