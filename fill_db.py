@@ -16,6 +16,7 @@ import nltk
 from nltk.collocations import *
 
 from itertools import islice
+import itertools
 
 PARSE_URL = f'http://db.chgk.info/xml/random'
 
@@ -211,12 +212,22 @@ def fill(fill_users=True, fill_questions=True, fill_tags=True, fill_answers=True
             q_id = q_ids[random.randrange(0, len(q_ids)-1)]
             return Question.likes.through(question_id=q_id, user_id=user_id)
 
-        for i in range(LIKES):
+        it = itertools.product(user_ids, q_ids)
+
+        i = 0
+        for comb in it:
+            if i + 1 == LIKES:
+                break
             print(f"Лайков: {i+1} из {LIKES}"+" "*20, end='\r')
+            '''
             user_q = gen_user_q()
             while user_q in q_to_user_links:
                 user_q = gen_user_q()
+            '''
+            user_id, q_id = comb
+            user_q = Question.likes.through(question_id=q_id, user_id=user_id)
             q_to_user_links.append(user_q)
+            i += 1
 
         Question.likes.through.objects.bulk_create(q_to_user_links, batch_size=batch_size)
 
@@ -227,4 +238,4 @@ def fill(fill_users=True, fill_questions=True, fill_tags=True, fill_answers=True
         '''
 
 
-fill(fill_users=True, fill_questions=True, fill_tags=True, fill_answers=True, fill_likes=True)
+fill(fill_users=False, fill_questions=False, fill_tags=False, fill_answers=False, fill_likes=True)

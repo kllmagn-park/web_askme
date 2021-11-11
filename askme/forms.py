@@ -20,7 +20,9 @@ class RegisterForm(forms.Form):
     passw_conf = forms.CharField(label='Подтверждение пароля', max_length=100, widget=forms.PasswordInput(attrs={'placeholder': 'Подтверждение пароля'}))
     avatar = forms.FileField(
         label='Выберите файл',
-        help_text=''
+        help_text='',
+        required=False,
+        validators=[validate_file_extension]
     )
 
     def __init__(self, *args, **kwargs):

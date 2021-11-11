@@ -227,10 +227,11 @@ def _form_signup(request):
             if data['passw'] != data['passw_conf']:
                 messages.error(request, 'Пароли не совпадают.')
                 return HttpResponseRedirect(reverse('signup'))
-            newavatar = request.FILES['avatar']
-            newavatar = cropper(newavatar, newavatar.name)
             userprofile = UserProfile()
-            userprofile.avatar = newavatar
+            if 'avatar' in request.FILES:
+                newavatar = request.FILES['avatar']
+                newavatar = cropper(newavatar, newavatar.name)
+                userprofile.avatar = newavatar
             userprofile.nick = data['nick']
             user = User.objects.create_user(username=data['login'], email=data['email'], password=data['passw'])
             userprofile.user = user
