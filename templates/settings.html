@@ -4,7 +4,7 @@
 {%endblock%}
 {% block content %}
 <div class="col border border-5 border-dark rounded-3 p-4">
-    <h2 class="text-center">Настройки аккаунта</h2>
+    <h2 class="text-center">Мои настройки</h2>
     <form action="{% url 'settings' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="mb-3">

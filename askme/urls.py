@@ -29,16 +29,19 @@ urlpatterns = [
     path('', views.index, name='index'),                                      # главная страница
     path('hot/', views.hot_questions, name='hot'),                            # популярные вопросы
     path('signup/', views.signup, name='signup'),                             # регистрация
-    path('login/', views.login, name='login'),                                # вход
-    path('login?continue=<str:redirect_url>', views.login, name='login_red'), # вход - перенаправление
+    path('login/', views.login, name='login'),                                # вход - перенаправление
     path('logout/', views.logout, name='logout'),                             # выход
-    path('ask/', views.ask, name='ask'),                             # задать вопрос
+    path('ask/', views.ask, name='ask'),                                      # задать вопрос
     path('like', views.like, name='like'),                                    # поставить лайк
     path('set_correct', views.set_correct, name='set_correct'),               # пометить ответ как верный
     path('question/<int:id>/', views.question, name='question'),              # страница вопроса
     path('search/', views.search, name='search'),                             # поиск
     path('tag/<str:tag>', views.show_tag, name='tag'),                        # страница вопросов с тегом
-    path('settings/', views.settings, name='settings')                        # настройки пользователя
+    path('profile/', views.profile, name='profile'),                           # профиль
+    path('profile/edit/', views.settings, name='settings'),                   # настройки пользователя
+    path('profile/add', views.handle_friend, name='add_friend'),              # добавить/удалить друга
+
+    path('game/', views.game, name='game')                                    # игра
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

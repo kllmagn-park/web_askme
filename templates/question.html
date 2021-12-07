@@ -3,19 +3,47 @@
 <title>{{SITE_TITLE}} - Вопросы</title>
 {%endblock%}
 {% block content %}
-<div class="col shadow bg-dark text-light border border-dark bordermx-1 my-1 px-2 py-2 rounded-3">
+{% if quest %}
+<script type=text/javascript>
+  PushStream.LOG_LEVEL = 'debug';
+  var pushstream = new PushStream({
+    host: window.location.hostname,
+    port: window.location.port,
+    modes: "websocket|eventsource|stream"
+  });
+  pushstream.onmessage = _manageEvent;
+  pushstream.removeAllChannels();
+  try {
+    pushstream.addChannel("answers");
+    pushstream.connect();
+  } catch(e) {alert(e)};
+
+  function _manageEvent(eventMessage) {
+    console.log(eventMessage);
+    if (eventMessage == "{{quest.id}}") {
+      gen_changer(window.location.href, '#answers_block')();
+    }
+  }
+
+  function _sendToChannel(e) {
+    var action_url = $(this).attr('action');
+    var url = window.location.href;
+    e.preventDefault();
+    $.ajax({
+        type: 'post',
+        mode: 'same-origin',
+        url: action_url,
+        data: $(this).serialize(),
+        complete: function () {pushstream.sendMessage("{{quest.id}}"); $('#id_text').value = '';}
+    });
+  }
+</script>
+{% endif %}
+<div class="d-flex flex-column shadow bg-dark text-light border border-dark bordermx-1 px-2 py-2 rounded-3">
   {%include "block_question.html"%}
   {% if username %}
-    <div class="row p-0 m-0">
-      <a class="btn btn-success mt-2" data-bs-toggle="collapse" href="#add_q_form" role="button" aria-expanded="false" aria-controls="add_q_form">
-        Добавить ответ
-      </a>
-    </div>
-  {% endif %}
-
-  {% if username %}
-    <div id="add_q_form" class="col border border-5 border-dark rounded-3 mt-3 collapse">
-        <form action="{% url 'question' id=quest.id %}" onsubmit='post_form.call(this, event)' method="post">
+    <div id="add_q_form" class="col border border-5 border-dark rounded-3 mt-3">
+        <form action="{% url 'question' id=quest.id %}" onsubmit="_sendToChannel.call(this, event); $('#id_text')[0].value = '';" method="post">
           {% csrf_token %}
           <div class="form-outline mb-2">
             {{form.text}}
@@ -30,14 +58,14 @@
 
 <!-- if not answers  -->
 <!-- <h4 class="text-center mt-2">Нет ответов :(</h4> -->
-{% if answers %}
-<div id="answers_block">
+
+<div id="answers_block" class="d-flex flex-column justify-content-center p-3">
+  {% if answers %}
   {% for answer in answers %}
     {%include "block_answer.html"%}
   {% endfor %}
+  {%include "paginator.html" with objs=answers%}
+  {% endif %}
 </div>
-{% endif %}
-
-{%include "paginator.html" with objs=answers%}
 
 {% endblock %}

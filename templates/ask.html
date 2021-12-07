@@ -5,7 +5,7 @@
 {% block content %}
 <div class="col border border-5 border-dark rounded-3 p-4">
     <h2 class="text-center">Добавить вопрос</h2>
-    <form action='/ask/' method="post"> <!--onsubmit='post_form.call(this, event)'>-->
+    <form action='/ask/' method="post" onsubmit='_new_question();'> <!--post_form.call(this, event)'>-->
       {% csrf_token %}
 
       <div class="form-outline mb-4">

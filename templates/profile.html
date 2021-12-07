@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head%}
+<title>{{SITE_TITLE}} - Вопросы</title>
+{%endblock%}
+{% block content %}
+<div class="d-flex flex-column rounded-3">
+    <div class="d-flex justify-content-center bg-dark rounded-top text-light p-2">
+        <h3 class="text-center text-wrap text-break align-self-center my-2">{{profile.user.username}}</h3>
+    </div>
+    <div class="d-flex flex-column bg-secondary bg-gradient text-light p-3 gap-3">
+        <img src="{{profile.avatar.url}}" class="align-self-center border border-white border-3 mt-auto" alt="{{profile.nick}}" height="auto" data-toggle="tooltip" data-placement="right" title="{{profile.nick}}" style="width: 10%;">
+        {% if username != profile.user.username %}
+            <form class="d-flex justify-content-center" action="{% url 'add_friend'%}?id={{profile.user.id}}" onsubmit="get_form.call(this, event);" method="get">
+                <button type="submit" class="btn btn-{% if myprofile in profile.friends.all %}danger{% else %}success{% endif %} p-1 my-4"><small>{% if myprofile in profile.friends.all %}Удалить из друзей{% else %}Добавить в друзья{% endif %}</small></button>
+            </form>
+        {% endif %}
+    </div>
+    <div class="container text-center text-light bg-dark border-top border-dark border-2 py-3">
+        <h4 class="mb-3">Друзья</h4>
+        {% if profile.friends.count > 0 %}
+            <ul class="list-group p-0">
+                <small>
+                {% for user in profile.friends.all %}
+                    <li class="p-1 list-group-item d-flex justify-content-between align-items-center">
+                        <a class="d-flex flex-inline badge text-dark text-decoration-none" href="{% url 'profile' %}?id={{user.user.id}}">{{user.user.username}}</a>
+                    </li>
+                {% endfor %}
+                </small>
+            </ul>
+        {% else %}
+          У {{profile.user.username}} нет друзей :(
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

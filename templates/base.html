@@ -1,20 +1,13 @@
 {% load static %}
 <!doctype html>
-<html lang="en" class="h-100">
+<html lang="en" class="h-100" style="padding-left: calc(100vw - 100%);">
   <head>
     <link rel="shortcut icon" type="image/png" href="{% static 'img/icon.png' %}"/>
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Hugo 0.88.1">
-
-    {%block head%}{%endblock%}
-
-    <!-- Bootstrap core CSS -->
-    <link href={% static "css/bootstrap.min.css" %} rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-
+    <meta name="description" content="Сервис по заданию вопросов.">
+    <meta name="author" content="Роман Медников">
 
     <style>
       .bd-placeholder-img {
@@ -33,6 +26,19 @@
     </style>
 
     
+    <!-- Bootstrap core CSS -->
+    <link href={% static "css/bootstrap.min.css" %} rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+
+    
+    <link rel="stylesheet" type="text/css" href="{% static 'css/toastr.css' %}" media="all">
+    <script type="text/javascript" src="{% static 'js/toastr.min.js' %}"></script>  
+
+    <script type="text/javascript" src="{% static 'js/pushstream.js' %}"></script>  
+
     <!-- Custom styles for this template -->
     <link href={% static 'css/sticky-footer-navbar.css' %} rel="stylesheet">
   
@@ -43,30 +49,82 @@
     <link href={% static "css/my.css" %} rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/coliff/bootstrap-rfs/bootstrap-rfs.css">
 
-    <script
-  src="https://code.jquery.com/jquery-3.6.0.min.js"
-  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
-  crossorigin="anonymous"></script>
-  
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-
     <script>
           $(document).ready(function() {
         $("body").tooltip({ selector: '[data-toggle=tooltip]',placement: 'right' });
     });
     </script>
 
-    {% with '0123456789' as list_for_random %}
-      <script src={% static "js/ajax.js" %}></script> <!-- ?seed={{ list_for_random | random }} -->
-    {% endwith %}
+    <script src={% static "js/ajax.js" %}?seed=v19></script>
     <script src={% static "js/bootstrap.bundle.min.js"%}></script>
 
     <script type="text/javascript"> document.addEventListener('click', function(e) { if(document.activeElement.toString() == '[object HTMLButtonElement]'){ document.activeElement.blur(); } }); </script>
 
+    <script type="text/javascript">
+      var user_stream = new PushStream({
+          host: window.location.hostname,
+          port: window.location.port,
+          modes: "websocket|eventsource|stream"
+      });
+      user_stream.onmessage = _handleUserMessage;
+      user_stream.removeAllChannels();
+      try {
+          user_stream.addChannel("{{username}}");
+          user_stream.connect();
+      } catch(e) {alert(e)};
+
+      function _handleUserMessage(eventMessage) {
+        if (eventMessage == '') return;
+        vals = $.parseJSON(eventMessage);
+        if (!('type' in vals)) return;
+        type = vals['type'];
+        if (type == 'friend_request') {
+          
+        }
+      }
+
+    </script>
+
+    {%block head%}{%endblock%}
   </head>
     
-  <body class="d-flex flex-column h-100 bg-image" style="background-image: url({% static 'img/background.jpg' %}); background-size:cover; height: 100vh"> <!-- background-size:cover; -->
-    <header class="mb-auto">
+  <!-- background-color: rgb(38, 27, 92); -->
+  <!-- background-image: url({% static 'img/background.jpg' %}); background-size:cover; height: 100vh -->
+  <body class="d-flex flex-column h-100 bg-dark bg-gradient min-vw-100" style="background-repeat: no-repeat;
+  background-attachment: fixed; min-width:800px !important; width: auto !important; width:800px;"> <!-- background-size:cover; -->
+    {% if messages %}
+    <script type="text/javascript">toastr.options = {
+      "closeButton": false,
+      "debug": false,
+      "newestOnTop": false,
+      "progressBar": true,
+      "positionClass": "toast-bottom-right",
+      "preventDuplicates": false,
+      "onclick": null,
+      "showDuration": "300",
+      "hideDuration": "1000",
+      "timeOut": "5000",
+      "extendedTimeOut": "1000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    }</script>
+      {% for message in messages %}
+          {% if not message.extra_tags or username in message.extra_tags %}
+            {% if message.tags == 'success'%}
+                <script type=text/javascript>toastr.{{ message.tags }}('{{ message }}')</script>
+            {% elif message.tags == 'info' %}
+                <script type=text/javascript>toastr.{{ message.tags }}('{{ message }}')</script>
+            {% elif message.tags == 'warning' %}
+                <script type=text/javascript>toastr.{{ message.tags }}('{{ message }}')</script>
+            {% elif message.tags == 'error' %}
+                <script type=text/javascript>toastr.{{ message.tags }}('{{ message }}')</script>
+            {% endif %}
+          {% endif %}
+      {% endfor %}
+    {% endif %}
+    <header>
       <!-- Fixed navbar -->
       <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
         <div class="container-fluid">
@@ -84,15 +142,28 @@
               </li>
             </ul>
             <form action="{% url 'search' %}" method='get' class="d-flex">
-              <input name='query' class="form-control me-2 p-2" type="search" placeholder="Ваш запрос..." aria-label="Ваш запрос...">
-              <button class="btn btn-outline-success me-2" type="submit">Найти</button>
+              <input id='search_input' name='query' class="form-control me-2 p-2" type="search" placeholder="Ваш запрос..." aria-label="Ваш запрос...">
+              <script>
+                var input = document.getElementById('search_input')
+                function throttle(func, interval) {
+                    var lastCall = 0;
+                    return function() {
+                        var now = Date.now();
+                        if (lastCall + interval < now) {
+                            lastCall = now;
+                            return func.apply(this, arguments);
+                        }
+                    };
+                }
+                input.oninput = throttle(function() {
+                  gen_changer('/search?query='+input.value)();
+                }, 5000);
+              </script>
+              <button id='search_btn' class="btn btn-outline-success me-2" type="submit">Найти</button>
             </form>
             <div class="d-flex align-items-center me-lg-1 ms-auto">
               {% if username %}
-                <a id="settings" href='#' class="me-2">
-                  <img src="{{avatar}}" alt="{{usernick}}" style="width: 4vh; height: 4vh; min-height:100%;">
-                </a>
-                <button id="ask" class="btn btn-outline-success align-middle me-2">+</button>
+                <button id="ask" class="btn btn-outline-success align-middle me-2">Спросить</button>
                 <a class="btn btn-outline-danger align-middle" href="{% url 'logout' %}">Выйти</a>
               {% else %}
                 <button id="login" class="btn btn-outline-success align-middle me-2">Войти</button>
@@ -105,49 +176,73 @@
     </header>
 
     <!-- Begin page content -->
-    <main class="flex-shrink-0 mb-4 mt-4">
-      <div class='container me-auto ms-auto'>
-        <div class="row border border-dark">
-          <div class="col-9 p-4 bg-white rounded-3 border-end border-dark">
-            <div id="content" class="d-flex flex-column w-100 h-100 align-items-stretch justify-content-center">
-              {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-dismissible fade show {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}alert-danger {% else %}alert-success {% endif %}">
-                        {{ message }}
-                      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
-                    </div>
-                {% endfor %}
-              {% endif %}
-              {% block content %}{% endblock %}
-            </div>
-          </div>
-          <div class="col-3 py-4 bg-white rounded-3">
-            <div class="row">
-              <h2 class="text-center mb-2 d-none d-lg-block">Популярные теги</h2>
-              <h4 class="text-center mb-2 d-sm-none d-lg-none d-md-block">Популярные теги</h4>
-              <h6 class="text-center mb-2 d-md-none d-lg-none">Популярные теги</h6>
-              <div class="container text-center">
-                {% if tags_rank %}
-                  {% include "block_tags.html" with tags=tags_rank %}
-                {% else %}
-                  Нет тегов :(
+    <main class="flex-shrink-0 mb-auto mt-auto">
+      <div class='container me-auto ms-auto py-0'>
+        <div class="row">
+          <div class="col-3">
+            <div class="d-flex sticky-top pt-5" style="height: 89.5vh;">
+              <div class="col-12 mt-5 bg-white rounded-3 sticky-top">
+                {% if username %}
+                <div class="position-relative rounded-top bg-secondary d-flex flex-column justify-content-center py-2 px-5 text-center text-decoration-none gap-2">
+                  <a id="settings" class="mt-1 me-1 text-decoration-none badge text-light bg-dark position-absolute top-0 end-0" href='#'>Настройки<a>
+                  <a class="text-decoration-none align-self-center d-flex flex-column justify-content-center mt-auto" href="{% url 'profile' %}?id={{myprofile.user.id}}">
+                    <img src="{{avatar}}" alt="{{usernick}}" class="border border-dark border-2 align-self-center" style="width: 8vh; height: 8vh; min-height:100%;">
+                    <div class="badge bg-secondary"><h6 class="my-0 text-wrap text-break">{{usernick}}</h6></div>
+                  </a>
+                </div>
                 {% endif %}
+                <div class="col {% if not username %}rounded-top{% else %}border-top border-dark border-2{% endif %} p-2">
+                  <h4 class="text-center mb-2 d-none d-lg-block">Популярные теги</h4>
+                  <h4 class="text-center mb-2 d-sm-none d-lg-none d-md-block">Популярные теги</h4>
+                  <h6 class="text-center mb-2 d-md-none d-lg-none">Популярные теги</h6>
+                  <small>
+                    <div class="container text-center">
+                      {% if tags_rank %}
+                        {% include "block_tags.html" with tags=tags_rank %}
+                      {% else %}
+                        Нет тегов :(
+                      {% endif %}
+                    </div>
+                  </small>
+                </div>
+                <div class="col p-2 border-top border-dark border-2 text-center">
+                  <h4 class="text-center mb-2 d-none d-lg-block">Лучшие участники</h4>
+                  <h4 class="text-center mb-2 d-sm-none d-lg-none d-md-block">Лучшие участники</h4>
+                  <h6 class="text-center mb-2 d-md-none d-lg-none">Лучшие участники</h6>
+                  <div class="container text-center">
+                    {% if best_users %}
+                      <ul class="list-group p-0">
+                        <small>
+                          {% for user in best_users %}
+                            <li class="p-1 list-group-item d-flex justify-content-between align-items-center">
+                              {{user.nick}}
+                              <span class="badge bg-primary rounded-pill">{{user.num_likes}}</span>
+                            </li>
+                          {% endfor %}
+                        </small>
+                      </ul>
+                    {% else %}
+                      Нет участников :(
+                    {% endif %}
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="row mt-4 text-center">
-              <h2 class="text-center mb-2 d-none d-lg-block">Лучшие участники</h2>
-              <h4 class="text-center mb-2 d-sm-none d-lg-none d-md-block">Лучшие участники</h4>
-              <h5 class="text-center mb-2 d-md-none d-lg-none">Лучшие участники</h5>
-              <div class="container text-center">
-                {% if best_users %}
-                  <ul class="list-group p-0">
-                    {% for user in best_users %}
-                      <li class="list-group-item">{{user.nick}}</li>
-                    {% endfor %}
-                  </ul>
-                {% else %}
-                  Нет участников :(
+          </div>
+          <div class="col-9 pt-5 mb-5">
+            <div class="col-12 mt-5 p-4 bg-white rounded-3 border-end border-dark">
+              <div id="content" class="d-flex flex-column w-100 h-100 align-items-stretch justify-content-center">
+                <!--
+                {% if messages %}
+                  {% for message in messages %}
+                      <div class="alert alert-dismissible fade show {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}alert-danger {% else %}alert-success {% endif %}">
+                          {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Закрыть"></button>
+                      </div>
+                  {% endfor %}
                 {% endif %}
+                -->
+                {% block content %}{% endblock %}
               </div>
             </div>
           </div>
@@ -155,8 +250,8 @@
       </div>
     </main>
 
-    <footer class="footer mt-auto py-3 bg-light">
-      <div class="container">
+    <footer class="footer pt-5">
+      <div class="col bg-light fixed-bottom py-2 px-4">
         <span class="text-muted">{{SITE_TITLE}}, 2021. Все права не защищены.</span>
       </div> 
     </footer>

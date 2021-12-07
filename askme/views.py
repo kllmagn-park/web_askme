@@ -13,25 +13,14 @@ from django.urls import reverse
 from .models import UserProfile, Question, Tag, Answer
 from .forms import LoginForm, RegisterForm, AddQuestionForm, AddAnswerForm, SettingsForm
 from .settings import MEDIA_ROOT
-from .utils import cropper, _like, _set_correct, _login, _form_ask, _form_question, _form_settings, _form_signup
+from .utils import cropper, _like, _set_correct, _login, _form_ask, _form_question, _form_settings, _form_signup, _profile, paginate
 
 from PIL import Image
 import json
 import re
 
-def paginate(objs, request, per_page=4):
-    pg = Paginator(objs, per_page)
-    page = request.GET.get('page', 1)
-    try:
-        pgp = pg.page(page)
-    except PageNotAnInteger:
-        pgp = pg.page(1)
-    except EmptyPage:
-        pgp = pg.page(pg.num_pages)
-    return pgp
-
 def index(request):
-    qp = paginate(Question.objects.last(), request, 4)
+    qp = paginate(Question.objects.last(), request, 10)
     return render(request, 'index.html', {'title': 'Новые вопросы', 'quests': qp})
 
 def show_tag(request, tag):
@@ -42,21 +31,24 @@ def search(request):
     query = request.GET.get('query')
     if not query:
         return HttpResponseRedirect(reverse('index'))
-    qp = paginate(Question.objects.by_query(query), request, 4)
-    return render(request, 'index.html', {'title': 'Поиск', 'quests': qp})
+    objs = Question.objects.by_query(query)
+    qp = paginate(objs, request, 4)
+    num = objs.count()
+    title = f'Поиск - {num} вопросов' if num > 0 else 'Упс...'
+    return render(request, 'index.html', {'title': title, 'quests': qp, 'query': query})
 
 def hot_questions(request):
     qp = paginate(Question.objects.hot(), request, 4)
-    return render(request, 'index.html', {'title': 'Горячие вопросы', 'quests': qp})
+    return render(request, 'index.html', {'title': 'Популярные вопросы', 'quests': qp})
 
 def logout(request):
     if request.user.is_authenticated:
         djauth.logout(request)
     return HttpResponseRedirect(reverse('index'))
 
-def login(request, redirect_url=None):
-    redirect = redirect_url if redirect_url else '/'
-    if redirect_url or request.user.is_authenticated:
+def login(request):
+    redirect = request.GET.get('continue')
+    if redirect or request.user.is_authenticated:
         return HttpResponseRedirect(redirect)
     return _login(request)
 
@@ -91,6 +83,26 @@ def question(request, id=None):
         return HttpResponseRedirect('/')
     return _form_question(request, id)
 
+def profile(request):
+    return _profile(request)
+
+def handle_friend(request):
+    if not request.user.is_authenticated or request.method != 'GET':
+        raise Http404
+    userp = UserProfile.objects.get(user=request.user)
+    friend_id = request.GET.get('id')
+    if not friend_id:
+        raise Http404
+    friend = User.objects.get(id=friend_id)
+    if not friend:
+        raise Http404
+    friendp = UserProfile.objects.get(user=friend)
+    if userp.friends.filter(pk=friendp.pk).exists():
+        userp.friends.remove(friendp)
+    else:
+        userp.friends.add(friendp)
+    return HttpResponse('OK')
+
 def settings(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect('/')
@@ -100,3 +112,6 @@ def handler404(request, exception, template_name="404.html"):
     response = render_to_response(template_name)
     response.status_code = 404
     return response
+
+def game(request):
+    return render(request, 'game.html')

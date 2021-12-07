@@ -2,3 +2,8 @@ node_modules
 media
 .venv
 askme/__pycache__
+askme/migrations
+nginx-push-stream-module
+logs/*
+__pycache__
+uploads/*

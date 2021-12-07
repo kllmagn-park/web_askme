@@ -34,7 +34,7 @@ class RegisterForm(forms.Form):
 class AddQuestionForm(forms.Form):
     title = forms.CharField(label='Название', max_length=50, widget=forms.TextInput(attrs={'placeholder': 'Название'}))
     text = forms.CharField(label='Описание', max_length=500, widget=forms.Textarea(attrs={'placeholder': 'Описание'}))
-    tags = forms.CharField(label='Теги', max_length=500, widget=forms.TextInput(attrs={'placeholder': 'Теги (через запятую)'}))
+    tags = forms.CharField(label='Теги', min_length=1, max_length=20, widget=forms.TextInput(attrs={'placeholder': 'Теги (через запятую)'}))
 
     def __init__(self, *args, **kwargs):
         super(AddQuestionForm, self).__init__(*args, **kwargs)
@@ -43,7 +43,7 @@ class AddQuestionForm(forms.Form):
     
 
 class AddAnswerForm(forms.Form):
-    text = forms.CharField(label='Описание', max_length=500, widget=forms.Textarea(attrs={'placeholder': 'Ваш ответ...'}))
+    text = forms.CharField(label='Описание', max_length=500, required=True, widget=forms.Textarea(attrs={'rows': 4, 'placeholder': 'Ваш ответ...'}))
 
     def __init__(self, *args, **kwargs):
         super(AddAnswerForm, self).__init__(*args, **kwargs)

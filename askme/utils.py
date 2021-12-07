@@ -17,6 +17,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db.models import Count, F, Sum
 from django.shortcuts import render
 from django.urls import reverse
+from django.contrib.postgres.search import SearchVector
 
 from .models import UserProfile, Question, Tag, Answer
 from .forms import LoginForm, RegisterForm, AddQuestionForm, AddAnswerForm, SettingsForm
@@ -24,6 +25,7 @@ from .forms import LoginForm, RegisterForm, AddQuestionForm, AddAnswerForm, Sett
 from PIL import Image
 import json
 import re
+
 
 def paginate(objs, request, per_page=4):
     pg = Paginator(objs, per_page)
@@ -35,7 +37,6 @@ def paginate(objs, request, per_page=4):
     except EmptyPage:
         pgp = pg.page(pg.num_pages)
     return pgp
-
 
 def cropper(original_image, name):
     img_io = BytesIO()
@@ -59,20 +60,20 @@ def _login(request):
 
             if not User.objects.filter(username=data['login']).exists():
                 messages.error(request, f'Пользователь {data["login"]} не существует.')
-                return HttpResponseRedirect('/login')
+                return HttpResponseRedirect(reverse('login'))
 
             user = authenticate(username=data['login'], password=data['passw'])
             if user is not None:
                 userprofile = User
                 messages.info(request, "Успешный вход.")
                 djauth.login(request, user)
-                return HttpResponseRedirect('/login?continue=')
+                return HttpResponseRedirect("%s?continue=/" % reverse("login"))
             else:
                 messages.error(request, f'Неверный пароль.')
-                return HttpResponseRedirect('/login')
+                return HttpResponseRedirect(reverse('login'))
         else:
             messages.error(request,'Форма неверно заполнена.')
-            return HttpResponseRedirect('/login')
+            return HttpResponseRedirect(reverse('login'))
     else:
         form = LoginForm()
         return render(request, 'login.html', {'form': form})
@@ -89,10 +90,11 @@ def _like(request) -> dict:
         post = get_object_or_404(Answer, id=a_id)
     else:
         raise Http404
-    if post.likes.filter(id=request.user.id).exists():
-        post.likes.remove(request.user)
+    userp = UserProfile.objects.get(user=request.user)
+    if post.likes.filter(user=request.user).exists():
+        post.likes.remove(userp)
     else:
-        post.likes.add(request.user)
+        post.likes.add(userp)
     return {'likes_count': post.likes.count()}
 
 
@@ -111,6 +113,19 @@ def _set_correct(request):
     answer.is_correct = not answer.is_correct
     answer.save()
 
+def _profile(request):
+    if request.method != 'GET': return HttpResponseRedirect(reverse('index'))
+    user_id = request.GET.get('id')
+    if not user_id and request.user.is_authenticated:
+        user_id = User.objects.get(username=request.user)
+        if user_id:
+            user_id = user_id.id
+    if not user_id: return HttpResponseRedirect(reverse('index'))
+    user = User.objects.get(id=user_id)
+    if not user: return HttpResponseRedirect(reverse('index'))
+    userp = UserProfile.objects.get(user=user)
+    if not userp: return HttpResponseRedirect(reverse('index'))
+    return render(request, 'profile.html', {'profile': userp})
 
 def _form_settings(request):
     if request.method == 'POST':
@@ -165,6 +180,7 @@ def _form_question(request, id=None):
                 a.question = q
                 a.save()
                 messages.info(request, "Ответ успешно добавлен.")
+                messages.add_message(request, messages.INFO, "Вам ответили!", extra_tags=q.user.user.username)
                 return HttpResponseRedirect(reverse('question', kwargs={'id': id}))
             else:
                 messages.error(request, 'Вы не авторизованы.')
@@ -178,7 +194,6 @@ def _form_question(request, id=None):
 
 
 def _form_ask(request):
-    print('test')
     if request.method == 'POST':
         form = AddQuestionForm(request.POST)
         if form.is_valid():
@@ -192,9 +207,7 @@ def _form_ask(request):
                 q.user = profile
                 q.save()
                 tags = data['tags']
-                print(tags)
                 tags = re.sub(r'(?:(?<=\,)\s*|\s*(?=\,))','', tags)
-                print(tags)
                 tags = tags.split(',') if ',' in tags else [tags]
                 for tag in tags:
                     if not Tag.objects.filter(name=tag).exists():
@@ -205,8 +218,9 @@ def _form_ask(request):
                         t = Tag.objects.get(name=tag)
                     q.tag_set.add(t)
                 q.save()
+                Question.objects.filter(pk=q.pk).update(sv=SearchVector('title', 'description'))
                 messages.info(request, "Вопрос успешно добавлен.")
-                return HttpResponseRedirect(reverse('question', kwargs={'id': q.id}))
+                return HttpResponseRedirect('/#q_'+str(q.id)) #reverse('question', kwargs={'id': q.id}))
             else:
                 messages.error(request, 'Пользователь не существует.')
         else:

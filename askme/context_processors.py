@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db.models import Count, F, Sum
+from django.core.cache import caches
 
 from .settings import SITE_TITLE, MEDIA_URL
 from .models import UserProfile, Tag
@@ -15,6 +16,7 @@ def user_info(request):
         user = User.objects.get(username=user)
         profile = UserProfile.objects.get(user=user)
         return {
+            'myprofile': profile,
             'avatar': profile.avatar.url,
             'username': user.username,
             'usermail': user.email,
@@ -24,9 +26,7 @@ def user_info(request):
         return {}
 
 def best_users(request):
-    busers = UserProfile.objects.best()
-    if busers.count() > 10:
-        busers = busers[:10]
+    busers = caches.all()[0].get('best_users')
     return {'best_users': busers}
 
 def tags_rank(request):

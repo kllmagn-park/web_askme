@@ -1,12 +1,12 @@
 <div a_id="{{answer.id}}" class="answer_block">
     <div class="row answer_block border border-{%if answer.is_correct %}success{% else %}dark{% endif %} border-5 bg-dark text-light mx-1 my-1 px-2 py-2 rounded-3">
-      <div class="col-sm-auto" style="width: 18%">
-        <img src="{{answer.user.avatar.url}}" class="border border-white border-3" alt="{{answer.user.nick}}" width="100%" height="auto">
+      <div class="d-flex flex-column justify-content-center" style="width: 18%">
+        <a class="align-self-center d-flex justify-content-center mt-auto" href="{% url 'profile' %}?id={{answer.user.user.id}}">
+          <img src="{{answer.user.avatar.url}}" class="align-self-center border border-white border-3" alt="{{answer.user.nick}}" width="70vw" height="auto">
+        </a>
         <div class="row my-2 mx-1 gap-2">
-          <button onclick='like.call(this)' a_id="{{answer.id}}" class="d-flex btn btn-danger btn-sm px-0" {%if not username %} disabled {% endif %} data-toggle="tooltip" data-placement="right" title="{{answer.likes.count}}">
-            <span class="ms-auto me-auto">❤️</span>
-          </button>
-          <input {%if not quest.user.user.username == username %}disabled{%endif%} type="checkbox" class="btn-check" a_id="{{answer.id}}" onclick="set_correct.call(this)" id="btn-check-2-{{answer.id}}-outlined" {% if answer.is_correct %}checked{% endif %} autocomplete="off">
+          {% include "buttons.html" with obj=answer like_button_tt=True%}
+          <input {%if not quest.user.user.username == username %}disabled{%endif%} type="checkbox" class="btn-check d-none" a_id="{{answer.id}}" onclick="set_correct.call(this)" id="btn-check-2-{{answer.id}}-outlined" {% if answer.is_correct %}checked{% endif %} autocomplete="off">
           <label {%if not quest.user.user.username == username %}disabled{%endif%} class="btn btn-outline-success" for="btn-check-2-{{answer.id}}-outlined">✓</label>
         </div>
       </div>

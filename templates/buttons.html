@@ -7,15 +7,46 @@
 {% endif %}
 
 {% if answers_button %}
-<button id="show_answers" onclick="gen_changer('/question/{{obj.id}}/')();" class="d-flex btn btn-primary btn-sm me-auto px-0" data-toggle="tooltip" data-placement="right" title="{{obj.answer_set.count}}">
+<button id="show_answers" onclick="gen_changer('/question/{{obj.id}}/')();" class="d-flex btn btn-primary btn-sm me-auto p-0" data-toggle="tooltip" data-placement="right" title="{{obj.answer_set.count}}">
   <span class="ms-auto me-auto d-none d-lg-block">Ответы</span>
   <span class="ms-auto me-auto d-lg-none">🗨️</span>
 </button>
 {% endif %}
 
 {% if like_button_tt %}
-<button onclick='like.call(this)' {%if obj.question %}a_id{%else%}q_id{%endif%}="{{obj.id}}" class="d-flex btn btn-danger btn-sm me-auto px-0" {%if not username %} disabled {% endif %} data-toggle="tooltip" data-placement="right" title="{{obj.likes.count}}">
-  <span class="ms-auto me-auto d-none d-lg-block">Нравится</span>
-  <span class="ms-auto me-auto d-lg-none">❤️</span>
-</button>
+<div id="like_btn_group_{%if obj.question %}a{%else%}q{%endif%}_{{obj.id}}" class="p-0 m-0">
+  <div class="btn-group d-flex me-auto px-0" role="group" aria-label="Нравится">
+    <button type="button" class="btn btn-danger p-0" data-bs-toggle="modal" data-bs-target="#modal_{%if obj.question %}a{%else%}q{%endif%}_{{obj.id}}">👀</button>
+    <button id="like_btn" onclick='like.call(this)' {%if obj.question %}a_id{%else%}q_id{%endif%}="{{obj.id}}" class="btn btn-danger btn-sm p-0" {%if not username %} disabled {% endif %} data-toggle="tooltip" data-placement="right" title="{{obj.likes.count}}">
+      <span class="ms-auto me-auto d-none d-lg-block">Нравится</span>
+      <span class="ms-auto me-auto d-lg-none">❤️</span>
+    </button>
+  </div>
+  <div class="modal fade" id="modal_{%if obj.question %}a{%else%}q{%endif%}_{{obj.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable d-flex flex-column justify-content-center ">
+      <div class="modal-content bg-dark">
+        <div class="modal-header">
+          <h5 class="modal-title">Нравится пользователям</h5>
+          <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+        </div>
+        <div class="modal-body">
+          {% if obj.likes.count > 0%}
+            {% for user in obj.likes.all %}
+              {% if forloop.first %}<div class="row"><div class="d-flex flex-inline gap-3 justify-content-center">{% endif %}
+                <img src="{{user.avatar.url}}" alt="{{user.avatar.url}}" class="border border-white border-2 align-self-center" data-toggle="tooltip" data-placement="right" title="{{user.nick}}"
+                    style="width: 8vh; height: 8vh; min-height:100%;"> <!-- style="width: 8vh; height: 8vh; min-height:100%;"> -->
+              {% if forloop.counter|divisibleby:5 %}</div></div><div class="row">{% endif %}
+              {% if forloop.last %}</div></div>{% endif %}
+            {% endfor %}
+          {% else %}
+            Нет пользователей.
+          {% endif %}
+        </div>
+        <div class="modal-footer">
+          <!--<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>-->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endif %}
