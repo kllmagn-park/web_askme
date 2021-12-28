@@ -10,11 +10,24 @@ jobs:
       - name: Setup
         run: |
           pacman --noconfirm -Syu sudo
-          sudo pacman --noconfirm -S python python-pip unzip
-          sudo pip install pipreqs
+          sudo pacman --noconfirm -S python python-pip unzip nginx postgresql memcached
+          #sudo pip install pipreqs
+          sudo pip install django django-cleanup django-cachalot gunicorn pillow
           cd $GITHUB_WORKSPACE
-          sudo unzip .venv.zip > /dev/null
-          sudo pipreqs .venv
-          sudo chmod -R 755 .venv
-          source .venv/bin/activate
-          .venv/bin/python manage.py runserver
+          #sudo unzip .venv.zip > /dev/null
+          #sudo pipreqs .venv
+          #sudo chmod -R 755 .venv
+          #source .venv/bin/activate
+      - name: PostgreSQL Setup
+        run: |
+          sudo -iu postgres
+          initdb -D /var/lib/postgres/data
+          createdb postgres
+          exit
+          sudo systemctl start postgresql
+      - name: Run memcached
+        run: |
+          sudo memcached &
+      - name: Run Server
+        run: |
+          python manage.py runserver
