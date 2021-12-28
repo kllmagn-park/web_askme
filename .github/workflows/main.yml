@@ -27,7 +27,8 @@ jobs:
           sudo mkdir -p /run/postgresql
           sudo sudo chown -R postgres:postgres /run/postgresql/
           su postgres -c '/usr/bin/postgres -D /var/lib/postgres/data &'
-          timeout 15 echo 'Creating database...'
+          sleep 10
+          echo 'Creating database...'
           su postgres -c 'createdb postgres'
       - name: Run memcached
         run: |
