@@ -9,6 +9,7 @@ jobs:
       options: --privileged
     steps:
       - uses: actions/checkout@v2
+      
       - name: Setup
         run: |
           pacman --noconfirm -Syu sudo
@@ -20,6 +21,7 @@ jobs:
           #sudo pipreqs .venv
           #sudo chmod -R 755 .venv
           #source .venv/bin/activate
+          
       - name: PostgreSQL Setup
         run: |
           su postgres -c 'initdb -D /var/lib/postgres/data'
@@ -30,9 +32,27 @@ jobs:
           #sleep 10
           #echo 'Creating database...'
           #su postgres -c 'createdb postgres'
+          
+      - name: Nginx Setup
+        run: |
+          # clone the project
+          git clone https://github.com/wandenberg/nginx-push-stream-module.git
+          NGINX_PUSH_STREAM_MODULE_PATH=$PWD/nginx-push-stream-module
+          wget http://nginx.org/download/nginx-1.19.9.tar.gz
+          # unpack, configure and build
+          tar xzvf nginx-1.19.9.tar.gz
+          cd nginx-1.19.9
+          ./configure --add-module=../nginx-push-stream-module
+          make
+          # install and finish
+          sudo make install
+          # check
+          sudo /usr/local/nginx/sbin/nginx -v
+
       - name: Run memcached
         run: |
           sudo memcached -u root &
+          
       - name: Prepare Server
         run: |
           sudo mkdir logs
@@ -40,6 +60,7 @@ jobs:
           sudo python manage.py makemigrations
           sudo python manage.py migrate
           sudo cp -r static /var/www/static
+          
       - name: Ngrok
         run: |
             sudo wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.tgz
@@ -48,6 +69,7 @@ jobs:
             sudo ngrok http 8000 &
             sleep 5
             sudo curl http://127.0.0.1:4040/api/tunnels
+            
       - name: Run Server
         run: |
           python manage.py runserver
