@@ -22,8 +22,9 @@ jobs:
           #source .venv/bin/activate
       - name: PostgreSQL Setup
         run: |
-          sudo postgres -D /usr/local/pgsql/data >logfile 2>&1 &
-          su postgres -c 'initdb -D /var/lib/postgres/data && createdb postgres'
+          su postgres -c 'initdb -D /var/lib/postgres/data'
+          sudo pg_ctl -D /var/lib/postgres/data -l logfile start
+          su postgres -c 'createdb postgres'
       - name: Run memcached
         run: |
           sudo memcached &
