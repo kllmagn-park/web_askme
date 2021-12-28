@@ -6,4 +6,5 @@ askme/migrations
 nginx-push-stream-module
 logs/*
 __pycache__
-uploads/*
+uploads/avatars/*
+!uploads/avatars/person-dummy.jpg
