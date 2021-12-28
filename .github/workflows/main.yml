@@ -32,7 +32,10 @@ jobs:
           #su postgres -c 'createdb postgres'
       - name: Run memcached
         run: |
-          sudo memcached &
+          sudo memcached -u &
+      - name: Prepare Server
+        run: |
+          sudo mkdir logs
       - name: Run Server
         run: |
           python manage.py runserver
