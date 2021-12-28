@@ -20,7 +20,7 @@ jobs:
           #source .venv/bin/activate
       - name: PostgreSQL Setup
         run: |
-          sudo -iu postgres
+          su -l postgres
           initdb -D /var/lib/postgres/data
           createdb postgres
           exit
