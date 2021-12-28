@@ -23,7 +23,7 @@ jobs:
       - name: PostgreSQL Setup
         run: |
           su postgres -c 'initdb -D /var/lib/postgres/data'
-          sudo fuser -k 5432/tcp 2>/dev/null
+          #sudo fuser -k 5432/tcp 2>/dev/null
           echo 'Running PostgreSQL server...'
           su postgres -c 'pg_ctl start -D /usr/local/pgsql/data'
           echo 'Creating database...'
