@@ -36,6 +36,9 @@ jobs:
       - name: Prepare Server
         run: |
           sudo mkdir logs
+          sudo mkdir -p /var/www/static
+          sudo python manage.py makemigrations
+          sudo python manage.py migrate
       - name: Ngrok
         run: |
             sudo wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.tgz
