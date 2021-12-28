@@ -23,9 +23,8 @@ jobs:
       - name: PostgreSQL Setup
         run: |
           su postgres -c 'initdb -D /var/lib/postgres/data'
-          #sudo fuser -k 5432/tcp 2>/dev/null
           echo 'Running PostgreSQL server...'
-          su postgres -c 'pg_ctl start -D /var/lib/postgres/data'
+          sudo /usr/bin/postgres -D /var/lib/postgres/data &
           echo 'Creating database...'
           su postgres -c 'createdb postgres'
       - name: Run memcached
