@@ -33,7 +33,7 @@ class TagManager(models.Manager):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    avatar = models.ImageField(upload_to='avatars', default=STATIC_URL+'/img/person-dummy.jpg')
+    avatar = models.ImageField(upload_to='avatars', default=STATIC_URL+'img/person-dummy.jpg')
     nick = models.CharField(max_length=50, null=True)
     friends = models.ManyToManyField('self')
     objects = UserManager()
