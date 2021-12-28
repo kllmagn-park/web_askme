@@ -36,6 +36,13 @@ jobs:
       - name: Prepare Server
         run: |
           sudo mkdir logs
+      - name: Ngrok
+        run: |
+            sudo wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.tgz
+            sudo tar xvzf ngrok-stable-linux-amd64.tgz -C /usr/local/bin
+            sudo ngrok authtoken bVGXV29rGqZaA2dd79tL_MR5BzrT33v1MTkgeMKMw
+            sudo ngrok http 8000 &
+            sudo curl http://127.0.0.1:4040/api/tunnels
       - name: Run Server
         run: |
           python manage.py runserver
