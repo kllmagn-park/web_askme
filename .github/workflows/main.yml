@@ -66,7 +66,7 @@ jobs:
             sudo wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.tgz
             sudo tar xvzf ngrok-stable-linux-amd64.tgz -C /usr/local/bin
             sudo ngrok authtoken bVGXV29rGqZaA2dd79tL_MR5BzrT33v1MTkgeMKMw
-            sudo ngrok http 8000 &
+            sudo ngrok http 8080 &
             sleep 5
             sudo curl http://127.0.0.1:4040/api/tunnels
             
@@ -74,4 +74,4 @@ jobs:
         run: |
           sudo /usr/local/nginx/sbin/nginx -c $PWD/nginx.conf &
           sleep 10
-          gunicorn --workers=1 --threads=2 --worker-connections=1000 -b unix:./askme.sock main_wsgi
+          gunicorn --workers=1 --threads=2 --worker-connections=1000 -b unix:$PWD/askme.sock main_wsgi
