@@ -23,7 +23,7 @@ jobs:
       - name: PostgreSQL Setup
         run: |
           su postgres -c 'initdb -D /var/lib/postgres/data'
-          su postgres -c 'pg_ctl -D /var/lib/postgres/data -l logfile start'
+          su postgres -c 'pg_ctl -D /var/lib/postgres/data start'
           su postgres -c 'createdb postgres'
       - name: Run memcached
         run: |
