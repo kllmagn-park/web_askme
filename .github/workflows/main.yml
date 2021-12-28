@@ -12,7 +12,7 @@ jobs:
           pacman --noconfirm -Syu sudo
           sudo pacman --noconfirm -S python python-pip unzip
           sudo pip install pipreqs
-          pipreqs .venv
+          sudo pipreqs .venv
           cd $GITHUB_WORKSPACE
           sudo unzip .venv.zip > /dev/null
           sudo chmod -R 755 .venv
