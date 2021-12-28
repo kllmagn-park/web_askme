@@ -13,5 +13,6 @@ jobs:
           sudo pacman --noconfirm -S python unzip
           cd $GITHUB_WORKSPACE
           sudo unzip .venv.zip > /dev/null
+          sudo chmod -R 755 .venv
           source .venv/bin/activate
           .venv/bin/python manage.py runserver
