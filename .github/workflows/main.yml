@@ -9,8 +9,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: Setup
         run: |
-          pacman -Syu sudo
-          sudo pacman -S python
+          pacman --noconfirm -Syu sudo
+          sudo pacman --noconfirm -S python
           cd $GITHUB_WORKSPACE
           source .venv/bin/activate
           python manage.py runserver
