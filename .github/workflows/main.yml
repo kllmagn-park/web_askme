@@ -1,0 +1,16 @@
+name: Run server
+on: workflow_dispatch
+
+jobs:
+  run_server:
+    runs-on: ubuntu-latest
+    container: archlinux
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup
+        run: |
+          pacman --noconfirm -Syu sudo
+          sudo pacman --noconfirm -S python
+          cd $GITHUB_WORKSPACE
+          source .venv/bin/activate
+          python manage.py runserver
