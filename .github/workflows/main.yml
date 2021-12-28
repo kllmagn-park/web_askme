@@ -4,7 +4,9 @@ on: workflow_dispatch
 jobs:
   run_server:
     runs-on: ubuntu-latest
-    container: archlinux
+    container:
+      image: archlinux
+      options: "--privileged"
     steps:
       - uses: actions/checkout@v2
       - name: Setup
