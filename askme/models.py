@@ -47,11 +47,15 @@ class Question(models.Model):
     objects = QuestionManager()
     class Meta:
         indexes = [GinIndex(fields=['sv'])]
+    def __str__(self):
+        return f"{self.user.user.username} {self.title} {self.description} | {self.likes.count()} | {self.created}"
 
 class Tag(models.Model):
     name = models.CharField(max_length=20)
     questions = models.ForeignKey(Question, on_delete=models.CASCADE, null=True)
     objects = TagManager()
+    def __str__(self):
+        return self.name
 
 class Answer(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True)
@@ -60,3 +64,5 @@ class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, null=True)
     created = models.DateTimeField(auto_now_add=True)
     likes = models.ManyToManyField(UserProfile, related_name='answer_like')
+    def __str__(self):
+        return f"{self.user.user.username} {self.text} | {self.likes.count()} | {self.created} {self.is_correct}"

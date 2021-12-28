@@ -1,33 +1,19 @@
 {% load static %}
+<!doctype html>
 <html lang="en">
 <head>
+    <link rel="shortcut icon" type="image/png" href="{% static 'img/icon.png' %}"/>
+
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Responsive free template 404 for you website">
-    <meta name="author" content="BootstrapTema">
-    <link rel="icon" href="favicon.ico">
-    <title>Page 404 Template | BootstrapTema</title>
-    <!-- Bootstrap CDN CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
-    <!-- Custom CSS -->
-    <link href="style.css" rel="stylesheet">
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]-->
+    <meta name="description" content="Сервис по заданию вопросов.">
+    <meta name="author" content="Роман Медников">
+
+    <title>Упс...</title>
+    <!-- Bootstrap core CSS -->
+    <link href={% static "css/bootstrap.min.css" %} rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 </head>
-<body style="background-image: url({% static 'img/background_404.jpg' %}); height: 100vh">
-    <div id="html_embed_widget_7991" class="html_embed_widget embed_wrapper"><div data-height="616" data-width="976" class="game_frame game_pending" style="width: 976px; height: 616px"><div data-iframe="<iframe mozallowfullscreen=&quot;true&quot; allow=&quot;autoplay; fullscreen *; geolocation; microphone; camera; midi; monetization; xr-spatial-tracking; gamepad; gyroscope; accelerometer; xr&quot; frameborder=&quot;0&quot; src=&quot;//v6p9d9t4.ssl.hwcdn.net/html/1584325/index.html?v=1574335189&quot; msallowfullscreen=&quot;true&quot; scrolling=&quot;no&quot; allowfullscreen=&quot;true&quot; webkitallowfullscreen=&quot;true&quot; id=&quot;game_drop&quot; allowtransparency=&quot;true&quot;></iframe>" class="iframe_placeholder"><button class="button load_iframe_btn"><svg stroke-linecap="round" stroke="currentColor" class="svgicon icon_play" role="img" version="1.1" viewBox="0 0 24 24" stroke-width="2" height="24" stroke-linejoin="round" aria-hidden="" fill="none" width="24"><circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon></svg> Run game</button></div></div></div>
-    <section id="wrapper" class="invisible container-fluid">
-        <div class="error-box">
-            <div class="error-body text-center">
-                <h1 class="text-danger">404</h1>
-                <h3>Page Not Found !</h3>
-                <p class="text-muted m-t-30 m-b-30">MOST LIKELY THE PAGE YOU ARE LOOKING FOR THERE</p>
-                <a href="/" class="btn btn-danger btn-rounded m-b-40">Back to home</a> </div>
-            <footer class="footer text-center">2017 <a href="http://bootstraptema.ru/" target="_blank">BootstrapTema</a></footer>
-        </div>
-    </section>
+<body class="vh-100 d-flex justify-content-center bg-dark text-light">
+    <h1 class="align-self-center">Упс... такой страницы нет...</h1>
 </body>
 </html>

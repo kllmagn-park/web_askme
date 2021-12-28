@@ -22,8 +22,6 @@ from django.views.generic import TemplateView
 from . import views
 from . import settings
 
-handler404 = 'askme.views.handler404'
-
 urlpatterns = [
     path('admin/', admin.site.urls, name='admin'),                            # панель управления
     path('', views.index, name='index'),                                      # главная страница
@@ -46,3 +44,5 @@ urlpatterns = [
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += staticfiles_urlpatterns()
+
+handler404 = 'askme.views.handler404'

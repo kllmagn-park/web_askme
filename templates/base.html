@@ -155,7 +155,8 @@
                         }
                     };
                 }
-                input.oninput = throttle(function() {
+                input.oninput = throttle(function(event) {
+                  event.preventDefault();
                   gen_changer('/search?query='+input.value)();
                 }, 5000);
               </script>
@@ -184,8 +185,8 @@
               <div class="col-12 mt-5 bg-white rounded-3 sticky-top">
                 {% if username %}
                 <div class="position-relative rounded-top bg-secondary d-flex flex-column justify-content-center py-2 px-5 text-center text-decoration-none gap-2">
-                  <a id="settings" class="mt-1 me-1 text-decoration-none badge text-light bg-dark position-absolute top-0 end-0" href='#'>Настройки<a>
-                  <a class="text-decoration-none align-self-center d-flex flex-column justify-content-center mt-auto" href="{% url 'profile' %}?id={{myprofile.user.id}}">
+                  <a id="settings" class="mt-2 me-2 text-decoration-none badge bg-light position-absolute top-0 end-0 p-1" href='#'>⚙️<a>
+                  <a class="text-decoration-none align-self-center d-flex flex-column justify-content-center mt-3" href="{% url 'profile' %}?id={{myprofile.user.id}}">
                     <img src="{{avatar}}" alt="{{usernick}}" class="border border-dark border-2 align-self-center" style="width: 8vh; height: 8vh; min-height:100%;">
                     <div class="badge bg-secondary"><h6 class="my-0 text-wrap text-break">{{usernick}}</h6></div>
                   </a>

@@ -7,7 +7,7 @@
 {% endif %}
 
 {% if answers_button %}
-<button id="show_answers" onclick="gen_changer('/question/{{obj.id}}/')();" class="d-flex btn btn-primary btn-sm me-auto p-0" data-toggle="tooltip" data-placement="right" title="{{obj.answer_set.count}}">
+<button id="show_answers" onclick="gen_changer('/question/{{obj.id}}/')();" class="d-flex btn btn-outline-light btn-sm me-auto p-0" data-toggle="tooltip" data-placement="right" title="{{obj.answer_set.count}}">
   <span class="ms-auto me-auto d-none d-lg-block">Ответы</span>
   <span class="ms-auto me-auto d-lg-none">🗨️</span>
 </button>
@@ -16,11 +16,11 @@
 {% if like_button_tt %}
 <div id="like_btn_group_{%if obj.question %}a{%else%}q{%endif%}_{{obj.id}}" class="p-0 m-0">
   <div class="btn-group d-flex me-auto px-0" role="group" aria-label="Нравится">
-    <button type="button" class="btn btn-danger p-0" data-bs-toggle="modal" data-bs-target="#modal_{%if obj.question %}a{%else%}q{%endif%}_{{obj.id}}">👀</button>
-    <button id="like_btn" onclick='like.call(this)' {%if obj.question %}a_id{%else%}q_id{%endif%}="{{obj.id}}" class="btn btn-danger btn-sm p-0" {%if not username %} disabled {% endif %} data-toggle="tooltip" data-placement="right" title="{{obj.likes.count}}">
-      <span class="ms-auto me-auto d-none d-lg-block">Нравится</span>
-      <span class="ms-auto me-auto d-lg-none">❤️</span>
+    <button id="like_btn" onclick='like.call(this)' {%if obj.question %}a_id{%else%}q_id{%endif%}="{{obj.id}}" class="btn btn-light btn-sm p-0" {%if not username %} disabled {% endif %} data-toggle="tooltip" data-placement="right" title="{{obj.likes.count}}">
+      <span class="ms-auto me-auto d-none d-xl-block">Нравится</span>
+      <span class="ms-auto me-auto d-xl-none">❤️</span>
     </button>
+    <button type="button" class="btn btn-secondary p-0" data-bs-toggle="modal" data-bs-target="#modal_{%if obj.question %}a{%else%}q{%endif%}_{{obj.id}}">👀</button>
   </div>
   <div class="modal fade" id="modal_{%if obj.question %}a{%else%}q{%endif%}_{{obj.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable d-flex flex-column justify-content-center ">

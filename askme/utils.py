@@ -108,24 +108,28 @@ def _set_correct(request):
     answer = get_object_or_404(Answer, id=a_id)
     if str(answer.question.user.user.username) != str(request.user):
         raise Http404
-    if not answer.is_correct:
+    if not answer.is_correct: # если обновляемый ответ нееверный (будет верным)
+        # помечаем все остальные ответы как неверные
         Answer.objects.filter(is_correct=True, question=answer.question).update(is_correct = False)
-    answer.is_correct = not answer.is_correct
+    answer.is_correct = not answer.is_correct # переключаем ответ (верный/неверный)
     answer.save()
+    print(answer)
+
 
 def _profile(request):
     if request.method != 'GET': return HttpResponseRedirect(reverse('index'))
     user_id = request.GET.get('id')
     if not user_id and request.user.is_authenticated:
-        user_id = User.objects.get(username=request.user)
+        user_id = User.objects.filter(username=request.user).first()
         if user_id:
             user_id = user_id.id
     if not user_id: return HttpResponseRedirect(reverse('index'))
-    user = User.objects.get(id=user_id)
+    user = User.objects.filter(id=user_id).first()
     if not user: return HttpResponseRedirect(reverse('index'))
-    userp = UserProfile.objects.get(user=user)
+    userp = UserProfile.objects.filter(user=user).first()
     if not userp: return HttpResponseRedirect(reverse('index'))
     return render(request, 'profile.html', {'profile': userp})
+
 
 def _form_settings(request):
     if request.method == 'POST':
@@ -166,7 +170,7 @@ def _form_settings(request):
 
 def _form_question(request, id=None):
     q = Question.objects.get(id=id)
-    pa = paginate(q.answer_set.order_by('-created').all(), request, 4)
+    pa = paginate(q.answer_set.order_by('-is_correct', '-created').all(), request, 4)
     if request.method == 'POST':
         form = AddAnswerForm(request.POST)
         if form.is_valid():
@@ -180,7 +184,6 @@ def _form_question(request, id=None):
                 a.question = q
                 a.save()
                 messages.info(request, "Ответ успешно добавлен.")
-                messages.add_message(request, messages.INFO, "Вам ответили!", extra_tags=q.user.user.username)
                 return HttpResponseRedirect(reverse('question', kwargs={'id': id}))
             else:
                 messages.error(request, 'Вы не авторизованы.')

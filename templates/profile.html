@@ -9,10 +9,10 @@
         <h3 class="text-center text-wrap text-break align-self-center my-2">{{profile.user.username}}</h3>
     </div>
     <div class="d-flex flex-column bg-secondary bg-gradient text-light p-3 gap-3">
-        <img src="{{profile.avatar.url}}" class="align-self-center border border-white border-3 mt-auto" alt="{{profile.nick}}" height="auto" data-toggle="tooltip" data-placement="right" title="{{profile.nick}}" style="width: 10%;">
+        <img src="{{profile.avatar.url}}" class="align-self-center border border-white border-3 mt-auto" alt="{{profile.nick}}" height="auto" data-toggle="tooltip" data-placement="right" title="{{profile.nick}}" style="width: 20%;">
         {% if username != profile.user.username %}
             <form class="d-flex justify-content-center" action="{% url 'add_friend'%}?id={{profile.user.id}}" onsubmit="get_form.call(this, event);" method="get">
-                <button type="submit" class="btn btn-{% if myprofile in profile.friends.all %}danger{% else %}success{% endif %} p-1 my-4"><small>{% if myprofile in profile.friends.all %}Удалить из друзей{% else %}Добавить в друзья{% endif %}</small></button>
+                <button type="submit" class="btn btn-{% if myprofile in profile.friends.all %}danger{% else %}success{% endif %} p-1"><small>{% if myprofile in profile.friends.all %}Удалить из друзей{% else %}Добавить в друзья{% endif %}</small></button>
             </form>
         {% endif %}
     </div>
@@ -22,8 +22,8 @@
             <ul class="list-group p-0">
                 <small>
                 {% for user in profile.friends.all %}
-                    <li class="p-1 list-group-item d-flex justify-content-between align-items-center">
-                        <a class="d-flex flex-inline badge text-dark text-decoration-none" href="{% url 'profile' %}?id={{user.user.id}}">{{user.user.username}}</a>
+                    <li class="d-flex flex-column justify-content-stretch p-1 list-group-item">
+                        <a class="badge text-dark text-decoration-none" href="{% url 'profile' %}?id={{user.user.id}}"><h6 class="m-0">{{user.user.username}}</h6></a>
                     </li>
                 {% endfor %}
                 </small>
