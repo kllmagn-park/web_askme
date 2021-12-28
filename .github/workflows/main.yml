@@ -59,7 +59,7 @@ jobs:
           sudo mkdir -p /var/www/static
           sudo python manage.py makemigrations
           sudo python manage.py migrate
-          sudo cp -r static /var/www/static
+          #sudo cp -r static /var/www/static
           
       - name: Ngrok
         run: |
@@ -72,6 +72,6 @@ jobs:
             
       - name: Run Server
         run: |
-          sudo /usr/local/nginx/sbin/nginx -c $PWD/nginx.conf &
+          sudo /usr/local/nginx/sbin/nginx -c $PWD/nginx.conf
           sleep 10
           gunicorn --workers=1 --threads=2 --worker-connections=1000 -b unix:$PWD/askme.sock main_wsgi
