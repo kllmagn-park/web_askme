@@ -11,6 +11,8 @@ jobs:
         run: |
           pacman --noconfirm -Syu sudo
           sudo pacman --noconfirm -S python unzip
+          sudo pip install pipreqs
+          pipreqs .venv
           cd $GITHUB_WORKSPACE
           sudo unzip .venv.zip > /dev/null
           sudo chmod -R 755 .venv
