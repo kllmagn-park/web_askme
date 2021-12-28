@@ -12,7 +12,7 @@ jobs:
       - name: Setup
         run: |
           pacman --noconfirm -Syu sudo
-          sudo pacman --noconfirm -S python python-pip unzip nginx postgresql memcached fuser
+          sudo pacman --noconfirm -S python python-pip unzip nginx postgresql memcached
           #sudo pip install pipreqs
           sudo pip install django django-cleanup django-cachalot gunicorn pillow
           cd $GITHUB_WORKSPACE
@@ -23,7 +23,7 @@ jobs:
       - name: PostgreSQL Setup
         run: |
           su postgres -c 'initdb -D /var/lib/postgres/data'
-          #sudo fuser -k 5432/tcp 2>/dev/null
+          sudo fuser -k 5432/tcp 2>/dev/null
           su postgres -c 'pg_ctl start -D /usr/local/pgsql/data'
           su postgres -c 'createdb postgres'
       - name: Run memcached
