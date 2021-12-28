@@ -20,8 +20,8 @@ jobs:
           #source .venv/bin/activate
       - name: PostgreSQL Setup
         run: |
-          su postgres -c 'initdb -D /var/lib/postgres/data && createdb postgres'
           sudo systemctl start postgresql
+          su postgres -c 'initdb -D /var/lib/postgres/data && createdb postgres'
       - name: Run memcached
         run: |
           sudo memcached &
