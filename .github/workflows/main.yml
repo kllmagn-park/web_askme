@@ -73,4 +73,5 @@ jobs:
       - name: Run Server
         run: |
           sudo /usr/local/nginx/sbin/nginx -c $PWD/nginx.conf &
+          sleep 10
           gunicorn --workers=1 --threads=2 --worker-connections=1000 -b unix:./askme.sock main_wsgi
