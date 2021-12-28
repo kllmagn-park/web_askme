@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from django.db.models import Count, Sum, F
 from django.contrib.postgres.search import SearchVector, SearchVectorField
 from django.contrib.postgres.indexes import GinIndex
-from .settings import STATIC_URL
 
 import pgtrigger
 
@@ -33,7 +32,7 @@ class TagManager(models.Manager):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    avatar = models.ImageField(upload_to='avatars', default=STATIC_URL+'img/person-dummy.jpg')
+    avatar = models.ImageField(upload_to='avatars', default='avatars/person-dummy.jpg')
     nick = models.CharField(max_length=50, null=True)
     friends = models.ManyToManyField('self')
     objects = UserManager()
