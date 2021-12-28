@@ -10,7 +10,8 @@ jobs:
       - name: Setup
         run: |
           pacman --noconfirm -Syu sudo
-          sudo pacman --noconfirm -S python
+          sudo pacman --noconfirm -S python unzip
           cd $GITHUB_WORKSPACE
+          sudo unzip .venv.zip
           source .venv/bin/activate
           python manage.py runserver
