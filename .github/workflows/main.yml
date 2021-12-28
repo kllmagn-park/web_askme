@@ -24,7 +24,7 @@ jobs:
         run: |
           su postgres -c 'initdb -D /var/lib/postgres/data'
           echo 'Running PostgreSQL server...'
-          sudo /usr/bin/postgres -D /var/lib/postgres/data &
+          su postgres -c '/usr/bin/postgres -D /var/lib/postgres/data &'
           echo 'Creating database...'
           su postgres -c 'createdb postgres'
       - name: Run memcached
