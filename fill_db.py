@@ -238,4 +238,4 @@ def fill(fill_users=True, fill_questions=True, fill_tags=True, fill_answers=True
         '''
 
 
-fill(fill_users=False, fill_questions=False, fill_tags=False, fill_answers=False, fill_likes=True)
+fill(fill_users=True, fill_questions=True, fill_tags=True, fill_answers=True, fill_likes=True)
