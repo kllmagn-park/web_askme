@@ -84,7 +84,7 @@ def fill(fill_users=True, fill_questions=True, fill_tags=True, fill_answers=True
             print(f"Записываю пользователей: {i+1} из {USERS_TO_FILL}"+" "*20, end='\r')
             uname = person.username()
             if uname in used_unames:
-                uname += ''.join(random.choices(random.choice(string.digits+string.ascii_letters), k=10))
+                uname += ''.join(random.choices(string.digits+string.ascii_letters, k=10))
             users.append(User(
                 username = uname,
                 email = person.email(),
