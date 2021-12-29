@@ -61,6 +61,10 @@ jobs:
           sudo python manage.py migrate
           #sudo cp -r static /var/www/static
           
+      - name: Fill DB
+        run: |
+          sudo python ./fill_db.py
+          
       - name: Ngrok
         run: |
             sudo wget https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.tgz
