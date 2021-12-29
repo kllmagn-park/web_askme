@@ -216,3 +216,5 @@ CACHES = {
         'LOCATION': '127.0.0.1:11211',
     }
 }
+
+CSRF_COOKIE_SECURE=True
