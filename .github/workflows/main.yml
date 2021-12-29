@@ -73,7 +73,7 @@ jobs:
       - name: Run Server
         run: |
           sleep 10
-          sudo gunicorn --workers=1 --threads=2 --worker-connections=1000 -b unix:./askme.sock main_wsgi --daemon
+          sudo gunicorn --workers=1 --threads=2 --worker-connections=1000 -b unix:/var/www/askme.sock main_wsgi --daemon
           sleep 5
           ls
           sudo /usr/local/nginx/sbin/nginx -c `pwd`/nginx.conf -p "`pwd`" -g 'daemon off;'
