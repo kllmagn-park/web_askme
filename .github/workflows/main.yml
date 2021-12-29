@@ -15,7 +15,7 @@ jobs:
           pacman --noconfirm -Syu sudo
           sudo pacman --noconfirm -S python python-pip unzip postgresql memcached python-psycopg2 wget git gcc make
           #sudo pip install pipreqs
-          sudo pip install django django-cleanup django-cachalot gunicorn pillow django-pgtrigger pymemcache
+          sudo pip install django django-cleanup django-cachalot gunicorn pillow django-pgtrigger pymemcache mimesis nltk
           cd $GITHUB_WORKSPACE
           #sudo unzip .venv.zip > /dev/null
           #sudo pipreqs .venv
